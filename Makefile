@@ -51,6 +51,10 @@ kill-tomee:
 		rm $(HOME_DIR)/tomee-pid.txt; \
 	fi
 
+shutdown-tomee:
+	cd $(TOMEE_DIR)/tomee-runtime/ && \
+	./bin/shutdown.sh
+
 start-tomee: unzip-tomee restart-tomee
 
 tail:
@@ -70,6 +74,6 @@ run-jasmine:
 run-lint:
 	cd ./$(PROJECT_NAME)-gui/ && mvn jslint4java:lint
 
-.PHONY: up-war up-war-restart up-static clean-start clean-install unzip-tomee kill-tomee start-tomee restart-tomee \
-		run-jasmine run-lint tail
+.PHONY: up-war up-war-restart up-static clean-start clean-install unzip-tomee shutdown-tomee kill-tomee start-tomee \
+		restart-tomee run-jasmine run-lint tail
 
