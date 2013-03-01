@@ -24,7 +24,6 @@ YUI.add('ux-i18n', function (Y) {
         'home': 'Home',
         'page': 'Page',
         'send.email': 'Send email',
-        'read.email': 'Read email',
         'about': 'About',
         'send': 'Send',
         'cancel': 'Cancel',

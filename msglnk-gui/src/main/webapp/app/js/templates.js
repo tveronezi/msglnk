@@ -23,8 +23,7 @@ YUI.add('ux-templates', function (Y) {
     var files = [
         'about',
         'home',
-        'email-send',
-        'email-read'
+        'email-send'
     ];
 
     // A map will all the handlebars templates.

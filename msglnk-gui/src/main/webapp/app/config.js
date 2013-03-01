@@ -10,8 +10,8 @@ var YUI_CONF = {
                 'ux-console': 'app/js/console.js',
                 'ux-class': 'app/js/class.js',
                 'ux-app': {
-                    requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-fuelux', 'ux-console', 'ux-class',
-                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-view-email-read',
+                    requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-bootstrap', 'ux-console', 'ux-class',
+                        'ux-view-about', 'ux-view-home', 'ux-view-email-send',
                         'ux-model-email'
                     ],
                     path: 'app/js/app.js'
@@ -26,10 +26,6 @@ var YUI_CONF = {
                 },
 
                 // Views
-                'ux-view-grid': {
-                    requires: ['base', 'ux-templates'],
-                    path: 'app/js/view/grid.js'
-                },
                 'ux-view-about': {
                     requires: ['base', 'ux-templates'],
                     path: 'app/js/view/about.js'
@@ -41,10 +37,6 @@ var YUI_CONF = {
                 'ux-view-email-send': {
                     requires: ['base', 'ux-templates'],
                     path: 'app/js/view/email-send.js'
-                },
-                'ux-view-email-read': {
-                    requires: ['base', 'ux-templates', 'ux-view-grid'],
-                    path: 'app/js/view/email-read.js'
                 },
 
                 // Models
@@ -76,20 +68,6 @@ var YUI_CONF = {
                 'ux-lib-bootstrap-css': {
                     type: 'css',
                     path: 'app/lib/bootstrap/2.1.1/css/bootstrap.css'
-                },
-                'ux-lib-fuelux-css-responsive': {
-                    requires: ['ux-lib-fuelux-css'],
-                    type: 'css',
-                    path: 'app/lib/fuelux/2.3.0/css/fuelux-responsive.css'
-                },
-                'ux-lib-fuelux-css': {
-                    requires: ['ux-lib-bootstrap-css'],
-                    type: 'css',
-                    path: 'app/lib/fuelux/2.3.0/css/fuelux.css'
-                },
-                'ux-lib-fuelux': {
-                    requires: ['ux-lib-bootstrap', 'ux-lib-fuelux-css-responsive'],
-                    path: 'app/empty.js'
                 }
             }
         }

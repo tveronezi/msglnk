@@ -31,10 +31,6 @@ YUI.add('ux-app', function (Y) {
                 persist: false,
                 type: 'ux.view.EmailSend'
             },
-            'email-read': {
-                persist: false,
-                type: 'ux.view.EmailRead'
-            },
             about: {
                 persist: false,
                 type: 'ux.view.About'
@@ -52,10 +48,6 @@ YUI.add('ux-app', function (Y) {
 
     app.route('/email-send', function (req) {
         app.showView('email-send', {});
-    });
-
-    app.route('/email-read', function (req) {
-        app.showView('email-read', {});
     });
 
     app.on('EmailSend:ux-send-email', function (evt) {
@@ -80,23 +72,9 @@ YUI.add('ux-app', function (Y) {
         app.showView('email-send', {});
     });
 
-    app.on('EmailRead:ux-trigger-read-emails', function (evt) {
+    app.on('Home:ux-trigger-read-emails', function (evt) {
         Y.io(ROOT_URL + 'rest/email/trigger-read', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            on: {
-                complete: function (transactionid, response, args) {
-                    // TODO
-                }
-            }
-        });
-    });
-
-    app.on('EmailRead:ux-trigger-refresh-emails', function (evt) {
-        Y.io(ROOT_URL + 'rest/email', {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },

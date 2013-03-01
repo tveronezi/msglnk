@@ -20,6 +20,12 @@ YUI.add('ux-view-home', function (Y) {
     'use strict';
 
     Y.ux.Class.createClass('ux.view.Home', Y.View, {
+        events: {
+            '.ux-read-btn': {click: 'triggerRead'}
+        },
+        triggerRead: function () {
+            this.fire('ux-trigger-read-emails', {});
+        },
         render: function () {
             this.get('container').setHTML(Y.ux.Templates.build('home'));
             return this;
