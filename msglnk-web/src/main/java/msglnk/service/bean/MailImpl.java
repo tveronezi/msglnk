@@ -56,9 +56,6 @@ public class MailImpl {
     @EJB
     private BaseEAO baseEAO;
 
-    @EJB
-    private DtoBuilderImpl dtoBuilder;
-
     private class UserAuthenticator extends Authenticator {
         private final String user;
         private final String password;
@@ -161,6 +158,10 @@ public class MailImpl {
     }
 
     private void readEmails(MailSession mailSession) throws MessagingException, ApplicationException, IOException {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Reading emails from session " + mailSession);
+        }
+
         final Session session = getSession(mailSession);
         final Store store = session.getStore();
         store.connect();
@@ -178,6 +179,10 @@ public class MailImpl {
                 fp.add(FetchProfile.Item.CONTENT_INFO);
                 fp.add("X-Mailer");
                 folder.fetch(messages, fp);
+
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(messages.length + " new messages found.");
+                }
 
                 for (Message message : messages) {
                     try {

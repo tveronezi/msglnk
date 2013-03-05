@@ -36,4 +36,8 @@ class MailSession extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = 'mailSession')
     List<SessionParameter> parameters
 
+    @Override
+    String toString() {
+        return "MailSession{name='${name}', account='${account}'}"
+    }
 }

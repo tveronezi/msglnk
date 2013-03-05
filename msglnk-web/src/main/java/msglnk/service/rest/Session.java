@@ -18,13 +18,14 @@
 
 package msglnk.service.rest;
 
+import msglnk.cdi.DtoBuilder;
 import msglnk.data.dto.MailSessionDto;
 import msglnk.data.entity.MailSession;
-import msglnk.service.bean.DtoBuilderImpl;
 import msglnk.service.bean.MailImpl;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -38,8 +39,8 @@ public class Session {
     @EJB
     private MailImpl mailImpl;
 
-    @EJB
-    private DtoBuilderImpl builder;
+    @Inject
+    private DtoBuilder builder;
 
     @GET
     public List<MailSessionDto> list() {

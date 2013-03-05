@@ -18,13 +18,14 @@
 
 package msglnk.service.rest;
 
+import msglnk.cdi.DtoBuilder;
 import msglnk.data.dto.EmailDto;
 import msglnk.data.entity.Email;
-import msglnk.service.bean.DtoBuilderImpl;
 import msglnk.service.bean.MailImpl;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class Mail {
     @EJB
     private MailImpl mailImpl;
 
-    @EJB
-    private DtoBuilderImpl builder;
+    @Inject
+    private DtoBuilder builder;
 
     @POST
     @Consumes("application/json")
