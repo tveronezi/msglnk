@@ -16,22 +16,30 @@
  *  limitations under the License.
  */
 
-package msglnk.data.entity
+package msglnk.service.mdb;
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
+import msglnk.service.bean.Sudo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Entity
-@Table(name = 'mail_address_tbl', uniqueConstraints = @UniqueConstraint(columnNames = ['mail_address']))
-class EmailAddress extends BaseEntity {
+import javax.ejb.EJB;
+import javax.ejb.MessageDriven;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 
-    @Column(name = "mail_address", nullable = false)
-    String address
+@MessageDriven(mappedName = "SendEmailQueue")
+public class SendEmail implements MessageListener {
+    private static final Logger LOG = LoggerFactory.getLogger(SendEmail.class);
+
+    @EJB
+    private Sudo sudo;
 
     @Override
-    public String toString() {
-        return address
+    public void onMessage(Message message) {
+        try {
+            this.sudo.sendEmail(message);
+        } catch (Exception e) {
+            LOG.error("Error while processing 'add user' message", e);
+        }
     }
 }

@@ -61,13 +61,7 @@ class Email extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Email{" +
-                "session=" + session.name +
-                ", from=" + from +
-                ", to=" + to +
-                ", subject='" + subject + '\'' +
-                ", text='" + text + '\'' +
-                ", emailType=" + emailType +
-                '}';
+        return "Email{session=${session.name}, from=${from}, to=${to}, subject='${subject}', " +
+                "text='${text}', emailType=${emailType}}"
     }
 }

@@ -157,7 +157,7 @@ public class MailImpl {
         return this.baseEAO.findAll(MailSession.class);
     }
 
-    private void readEmails(MailSession mailSession) throws MessagingException, ApplicationException, IOException {
+    private void readEmails(MailSession mailSession) throws MessagingException, IOException {
         if (LOG.isInfoEnabled()) {
             LOG.info("Reading emails from session " + mailSession);
         }
@@ -181,7 +181,7 @@ public class MailImpl {
                 folder.fetch(messages, fp);
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(messages.length + " new messages found.");
+                    LOG.info(messages.length + " new message(s) found.");
                 }
 
                 for (Message message : messages) {
@@ -208,10 +208,6 @@ public class MailImpl {
     private Email read(MailSession mailSession, Message message) throws IOException, MessagingException {
         final Object contentObj = message.getContent();
 
-        if (!Part.class.isInstance(contentObj) && !String.class.isInstance(contentObj)) {
-            LOG.warn("Message not supported. MessageType: " + contentObj.getClass());
-        }
-
         final CreateEmail createEmail = new CreateEmail();
         createEmail.session = mailSession;
 
@@ -227,20 +223,25 @@ public class MailImpl {
 
         final String contentType = message.getContentType();
 
-        if (String.class.isInstance(contentObj)) {
-            createEmail.text = contentObj.toString();
-        } else {
-            final Part contentPart = Part.class.cast(contentObj);
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            contentPart.writeTo(out);
-
-            if (contentType.contains("ISO-8859-1")) {
-                createEmail.text = out.toString("ISO-8859-1");
-            } else if (contentType.contains("UTF-8")) {
-                createEmail.text = out.toString("UTF-8");
+        try {
+            if (String.class.isInstance(contentObj)) {
+                createEmail.text = contentObj.toString();
             } else {
-                createEmail.text = out.toString();
+                final Part contentPart = Part.class.cast(contentObj);
+                final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                contentPart.writeTo(out);
+
+                if (contentType.contains("ISO-8859-1")) {
+                    createEmail.text = out.toString("ISO-8859-1");
+                } else if (contentType.contains("UTF-8")) {
+                    createEmail.text = out.toString("UTF-8");
+                } else {
+                    createEmail.text = out.toString();
+                }
             }
+        } catch (Exception e) {
+            createEmail.text = "";
+            LOG.error("Impossible to get message text.", e);
         }
 
         createEmail.emailType = EmailType.INBOUND;
@@ -255,6 +256,10 @@ public class MailImpl {
     }
 
     private void notifyNewEmail(Email email) throws JMSException {
+        if(LOG.isInfoEnabled()) {
+            LOG.info("Notifying new email arrival. Email: " + email);
+        }
+
         Connection connection = null;
         javax.jms.Session session = null;
 
@@ -292,6 +297,11 @@ public class MailImpl {
     @Asynchronous
     public void readEmails() {
         final List<MailSession> sessions = getSessions();
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Reading emails from " + sessions.size() + " email(s) session(s).");
+        }
+
         for (MailSession session : sessions) {
             try {
                 readEmails(session);

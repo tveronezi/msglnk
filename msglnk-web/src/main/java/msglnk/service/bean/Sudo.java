@@ -16,22 +16,29 @@
  *  limitations under the License.
  */
 
-package msglnk.data.entity
+package msglnk.service.bean;
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
+import msglnk.ApplicationException;
 
-@Entity
-@Table(name = 'mail_address_tbl', uniqueConstraints = @UniqueConstraint(columnNames = ['mail_address']))
-class EmailAddress extends BaseEntity {
+import javax.annotation.security.RunAs;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.jms.JMSException;
+import javax.jms.Message;
 
-    @Column(name = "mail_address", nullable = false)
-    String address
+@Stateless(name = "MsglnkSudo")
+@RunAs("solution-admin")
+public class Sudo {
 
-    @Override
-    public String toString() {
-        return address
+    @EJB
+    private MailImpl mail;
+
+    public void sendEmail(Message message) throws JMSException, ApplicationException {
+        final String sessionName = message.getStringProperty("sessionName");
+        final String to = message.getStringProperty("to");
+        final String subject = message.getStringProperty("subject");
+        final String text = message.getStringProperty("text");
+
+        this.mail.sendMail(sessionName, null, to, subject, text);
     }
 }

@@ -18,18 +18,25 @@
 
 package msglnk.service.bean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 
 @RunAs("solution-admin")
 public class EmailReaderRobot {
+    private static final Logger LOG = LoggerFactory.getLogger(EmailReaderRobot.class);
 
     @EJB
     private MailImpl mail;
 
     @Schedule(minute = "*/15", hour = "*")
     public void readEmails() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Email reader triggered.");
+        }
         // read the emails every 15 minutes
         this.mail.readEmails();
     }
