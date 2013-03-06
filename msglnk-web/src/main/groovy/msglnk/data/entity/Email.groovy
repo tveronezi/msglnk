@@ -39,6 +39,7 @@ class Email extends BaseEntity {
     @Column(name = "msg_subject", nullable = false, updatable = false)
     String subject;
 
+    @Lob
     @Column(name = "msg_text", nullable = false, updatable = false)
     String text;
 
