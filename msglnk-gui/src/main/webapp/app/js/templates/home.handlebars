@@ -15,7 +15,19 @@
         <form>
             <fieldset>
                 <label>{{i18n "default.email.session.configuration"}}:</label>
-                <textarea name="text" class="input-block-level ux-session-properties" rows="5"></textarea>
+                <textarea name="text" class="input-block-level ux-session-properties" rows="12">
+ux_session_user_account=your user here
+ux_session_user_password=your password here
+ux_session_name=default
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.host=pop.gmail.com
+mail.store.protocol=pop3s
+mail.pop3s.auth=true
+mail.pop3s.port=995
+                </textarea>
             </fieldset>
         </form>
     </div>
