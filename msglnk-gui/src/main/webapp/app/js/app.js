@@ -16,6 +16,10 @@
  *  limitations under the License.
  */
 
+if (window.document.location.href + '/' === window.document.location.origin + ROOT_URL) {
+    window.location = window.document.location.href + '/';
+}
+
 YUI.add('ux-app', function (Y) {
     'use strict';
 
