@@ -21,7 +21,16 @@ YUI.add('ux-view-home', function (Y) {
 
     Y.ux.Class.createClass('ux.view.Home', Y.View, {
         events: {
-            '.ux-read-btn': {click: 'triggerRead'}
+            '.ux-read-btn': {click: 'triggerRead'},
+            '.ux-save-btn': {click: 'saveSession'}
+        },
+        saveSession: function () {
+            var txt = this.get('container').one('.ux-session-properties');
+            var value = txt.get('value');
+            this.fire('ux-save-email-session', {
+                config: value
+            });
+            this.render();
         },
         triggerRead: function () {
             this.fire('ux-trigger-read-emails', {});

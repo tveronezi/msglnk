@@ -26,10 +26,11 @@ import msglnk.service.bean.MailImpl;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 @Path("/session")
 @Produces("application/json")
@@ -42,9 +43,16 @@ public class Session {
     @Inject
     private DtoBuilder builder;
 
+    @POST
+    public void save(@FormParam("config") String config) throws IOException {
+        final Properties properties = new Properties();
+        properties.load(new ByteArrayInputStream(config.getBytes()));
+        this.mailImpl.persistSession(properties);
+    }
+
     @GET
     public List<MailSessionDto> list() {
-        final List<MailSession> sessions = mailImpl.getSessions();
-        return builder.buildSessions(sessions);
+        final List<MailSession> sessions = this.mailImpl.getSessions();
+        return this.builder.buildSessions(sessions);
     }
 }

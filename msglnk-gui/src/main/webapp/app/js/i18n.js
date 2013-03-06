@@ -38,6 +38,8 @@ YUI.add('ux-i18n', function (Y) {
         'trigger.email.read': 'Read emails from remote server',
         'emails': 'Emails',
         'search': 'Search',
+        'default.email.session.configuration': 'Default email session configuration',
+        'save.session.config': 'Save session configuration',
         'dummy': 'dummy'
     };
 

@@ -72,6 +72,20 @@ YUI.add('ux-app', function (Y) {
         app.showView('email-send', {});
     });
 
+    app.on('Home:ux-save-email-session', function (evt) {
+        Y.io(ROOT_URL + 'rest/session', {
+            method: 'POST',
+            data: {
+                config: evt.config
+            },
+            on: {
+                complete: function (transactionid, response, args) {
+                    // TODO
+                }
+            }
+        });
+    });
+
     app.on('Home:ux-trigger-read-emails', function (evt) {
         Y.io(ROOT_URL + 'rest/email/trigger-read', {
             method: 'POST',

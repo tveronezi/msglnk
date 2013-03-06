@@ -11,8 +11,18 @@
 
     <hr>
 
+    <div>
+        <form>
+            <fieldset>
+                <label>{{i18n "default.email.session.configuration"}}:</label>
+                <textarea name="text" class="input-block-level ux-session-properties" rows="5"></textarea>
+            </fieldset>
+        </form>
+    </div>
+
     <div class="jumbotron">
         <button class="btn send btn-large btn-danger ux-read-btn">{{i18n "trigger.email.read"}}</button>
+        <button class="btn btn-large ux-save-btn">{{i18n "save.session.config"}}</button>
     </div>
 
     <hr>

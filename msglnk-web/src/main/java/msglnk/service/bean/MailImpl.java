@@ -38,6 +38,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -131,7 +132,21 @@ public class MailImpl {
         }
     }
 
-    public MailSession persistSession(String name, String account, String password, Map<String, String> parameters) {
+    public MailSession persistSession(Properties config) {
+        final String name = config.getProperty("ux_session_name", "default");
+        String account = null;
+        String password = null;
+        final Map<String, String> parameters = new HashMap<String, String>();
+        for (String key : config.stringPropertyNames()) {
+            if ("ux_session_user_account".equals(key)) {
+                account = config.getProperty(key);
+            } else if ("ux_session_user_password".equals(key)) {
+                password = config.getProperty(key);
+            } else {
+                parameters.put(key, config.getProperty(key));
+            }
+        }
+
         MailSession mailSession = this.baseEAO.execute(
                 new FindByStringField<MailSession>(MailSession.class, "name", name)
         );
@@ -256,7 +271,7 @@ public class MailImpl {
     }
 
     private void notifyNewEmail(Email email) throws JMSException {
-        if(LOG.isInfoEnabled()) {
+        if (LOG.isInfoEnabled()) {
             LOG.info("Notifying new email arrival. Email: " + email);
         }
 

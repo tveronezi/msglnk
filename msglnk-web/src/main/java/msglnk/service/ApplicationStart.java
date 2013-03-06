@@ -26,11 +26,8 @@ import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Singleton(name = "MsglnkApplicationStart")
@@ -41,9 +38,9 @@ public class ApplicationStart {
     @EJB
     private MailImpl mail;
 
-    private void loadPropertiesFile(Properties config, File configFile) {
+    private void loadPropertiesFile(Properties config, InputStream configFile) {
         try {
-            config.load(new FileInputStream(configFile));
+            config.load(configFile);
         } catch (IOException e) {
             throw new SystemException(e);
         }
@@ -51,48 +48,14 @@ public class ApplicationStart {
 
     @PostConstruct
     public void applicationStartup() {
-        final String configDirPath = System.getProperty("mailSessionsConfigDirPath", "");
-        if ("".equals(configDirPath.trim())) {
-            // no-op
-            return;
-        }
+        final Properties config = new Properties();
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        loadPropertiesFile(config, cl.getResourceAsStream("META-INF/default-session.properties"));
 
-        final File configDir = new File(configDirPath);
-        if (!configDir.exists() || !configDir.isDirectory()) {
-            // no-op
-            return;
-        }
-
-        final File[] configFiles = configDir.listFiles();
-        if (configFiles.length == 0) {
-            // no-op
-            return;
-        }
-
-        for (File configFile : configFiles) {
-            final Properties config = new Properties();
-            loadPropertiesFile(config, configFile);
-
-            final String name = config.getProperty("ux_session_name", configFile.getName());
-            String account = null;
-            String password = null;
-            final Map<String, String> configMap = new HashMap<String, String>();
-            for (String key : config.stringPropertyNames()) {
-                if ("ux_session_user_account".equals(key)) {
-                    account = config.getProperty(key);
-                } else if ("ux_session_user_password".equals(key)) {
-                    password = config.getProperty(key);
-                } else {
-                    configMap.put(key, config.getProperty(key));
-                }
-            }
-
-            try {
-                this.mail.persistSession(name, account, password, configMap);
-            } catch (Exception e) {
-                throw new SystemException("Unable to persist session. Check the config file. File: "
-                        + configFile.getAbsolutePath());
-            }
+        try {
+            this.mail.persistSession(config);
+        } catch (Exception e) {
+            throw new SystemException("Unable to persist session. Check the config file.");
         }
     }
 }
