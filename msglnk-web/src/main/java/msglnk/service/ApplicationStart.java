@@ -18,44 +18,19 @@
 
 package msglnk.service;
 
-import msglnk.SystemException;
-import msglnk.service.bean.MailImpl;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RunAs;
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 @Singleton(name = "MsglnkApplicationStart")
 @Startup
 @RunAs("solution-admin")
 public class ApplicationStart {
 
-    @EJB
-    private MailImpl mail;
-
-    private void loadPropertiesFile(Properties config, InputStream configFile) {
-        try {
-            config.load(configFile);
-        } catch (IOException e) {
-            throw new SystemException(e);
-        }
-    }
-
     @PostConstruct
     public void applicationStartup() {
-        final Properties config = new Properties();
-        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        loadPropertiesFile(config, cl.getResourceAsStream("META-INF/default-session.properties"));
-
-        try {
-            this.mail.persistSession(config);
-        } catch (Exception e) {
-            throw new SystemException("Unable to persist session. Check the config file.");
-        }
+        // placeholder
     }
+
 }

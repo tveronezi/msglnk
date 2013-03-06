@@ -14,7 +14,6 @@
 
 HOME_DIR=$(shell cd && pwd)
 TOMEE_DIR=$(HOME_DIR)/TOMEE
-SESSION_CONFIG_DIR=$(HOME_DIR)/MAIL_SESSIONS
 PROJECT_NAME=msglnk
 TOMEE_ORIGINAL_DIR_NAME=apache-tomee-plus-1.6.0-SNAPSHOT
 
@@ -66,7 +65,6 @@ restart-tomee: kill-tomee
 	cd $(TOMEE_DIR)/tomee-runtime/ && \
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
-	export CATALINA_OPTS="-DmailSessionsConfigDirPath=$(SESSION_CONFIG_DIR)" && \
 	./bin/catalina.sh jpda start
 
 run-jasmine:
