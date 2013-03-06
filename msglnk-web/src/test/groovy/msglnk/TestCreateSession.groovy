@@ -30,7 +30,6 @@ import javax.ejb.embeddable.EJBContainer
 import javax.naming.Context
 import javax.naming.InitialContext
 import javax.naming.NamingException
-import java.util.concurrent.Callable
 
 class TestCreateSession {
 

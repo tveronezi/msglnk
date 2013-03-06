@@ -21,7 +21,7 @@
 <head>
     <meta charset="utf-8">
     <title>MsgLnk</title>
-    <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css" >
+    <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css">
     <script src="http://yui.yahooapis.com/3.8.1/build/yui/yui.js"></script>
     <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.

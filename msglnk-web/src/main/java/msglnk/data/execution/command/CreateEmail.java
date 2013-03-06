@@ -42,7 +42,7 @@ public class CreateEmail implements DbCommand<Email> {
         email.setSession(this.session);
         email.setFrom(eao.execute(new GetEmailAddress(this.from)));
 
-        for(String toAddress: this.to) {
+        for (String toAddress : this.to) {
             email.getTo().add(eao.execute(new GetEmailAddress(toAddress)));
         }
 

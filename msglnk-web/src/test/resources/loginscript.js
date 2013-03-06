@@ -17,7 +17,7 @@
 
 var result = null;
 
-if(user) {
+if (user) {
     result = new java.util.ArrayList();
     result.add(user);
 }

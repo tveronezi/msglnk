@@ -36,12 +36,12 @@ YUI.add('ux-model-email', function (Y) {
         // FILTERING
         if (options.filter) {
             data = _.filter(data, function (item) {
-                switch(options.filter.value) {
+                switch (options.filter.value) {
                     case 'lt5m':
-                        if(item.population < 5000000) return true;
+                        if (item.population < 5000000) return true;
                         break;
                     case 'gte5m':
-                        if(item.population >= 5000000) return true;
+                        if (item.population >= 5000000) return true;
                         break;
                     default:
                         return true;
@@ -82,7 +82,7 @@ YUI.add('ux-model-email', function (Y) {
     Y.ux.emailsModelList = emailsModelList;
 
     Y.ux.Class.createClass('ux.model.EmailsDataSource', Y.Base, {
-        columns: function() {
+        columns: function () {
             return [
                 {
                     property: 'from',
@@ -102,7 +102,7 @@ YUI.add('ux-model-email', function (Y) {
             ];
 
         },
-        data: function(options, callback) {
+        data: function (options, callback) {
             //options = {search, sortProperty, sortDirection, pageIndex, pageSize}
             execute(list, options, callback);
         }
