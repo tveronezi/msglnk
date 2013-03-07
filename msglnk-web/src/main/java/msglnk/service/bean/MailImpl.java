@@ -84,13 +84,20 @@ public class MailImpl {
     }
 
     public Email sendMail(String sessionName, String from, String to, String subject, String text) throws ApplicationException {
-        LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'", sessionName, from, to, subject, text);
+        final String session;
+        if(sessionName == null || "".equals(sessionName.trim())) {
+            session = "default";
+        } else {
+            session = sessionName.trim();
+        }
+
+        LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'", session, from, to, subject, text);
 
         final MailSession mailSession = this.baseEAO.execute(
-                new FindByStringField<MailSession>(MailSession.class, "name", sessionName)
+                new FindByStringField<MailSession>(MailSession.class, "name", session)
         );
         if (mailSession == null) {
-            throw new ApplicationException("Session not found. Session name: " + sessionName);
+            throw new ApplicationException("Session not found. Session name: " + session);
         }
 
         final CreateEmail createEmail = new CreateEmail();
