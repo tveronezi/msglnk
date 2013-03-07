@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
+import javax.ejb.Stateless;
 
+@Stateless
 @RunAs("solution-admin")
 public class EmailReaderRobot {
     private static final Logger LOG = LoggerFactory.getLogger(EmailReaderRobot.class);
@@ -32,11 +34,9 @@ public class EmailReaderRobot {
     @EJB
     private MailImpl mail;
 
-    @Schedule(minute = "*/15", hour = "*")
+    @Schedule(minute = "*/5", hour = "*", persistent = false)
     public void readEmails() {
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Email reader triggered.");
-        }
+        LOG.info("Email reader triggered.");
         // read the emails every 15 minutes
         this.mail.readEmails();
     }
