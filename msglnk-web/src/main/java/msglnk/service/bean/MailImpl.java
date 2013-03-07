@@ -84,6 +84,8 @@ public class MailImpl {
     }
 
     public Email sendMail(String sessionName, String from, String to, String subject, String text) throws ApplicationException {
+        LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'", sessionName, from, to, subject, text);
+
         final MailSession mailSession = this.baseEAO.execute(
                 new FindByStringField<MailSession>(MailSession.class, "name", sessionName)
         );
