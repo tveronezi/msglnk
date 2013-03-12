@@ -84,7 +84,7 @@ YUI.add('ux-app', function (Y) {
             },
             on: {
                 complete: function (transactionid, response, args) {
-                    // TODO
+                    // no-op
                 }
             }
         });
@@ -98,7 +98,7 @@ YUI.add('ux-app', function (Y) {
             },
             on: {
                 complete: function (transactionid, response, args) {
-                    // TODO
+                    // no-op
                 }
             }
         });

@@ -38,7 +38,7 @@ YUI.add('ux-templates', function (Y) {
             throw 'Template not found. key: ' + key;
         }
         return tpl;
-    };
+    }
 
     output.build = function (key, cfg) {
         var tpl = getTpl(key);
