@@ -25,6 +25,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tomee.version>1.6.0-SNAPSHOT</tomee.version>
         <openejb.version>4.6.0-SNAPSHOT</openejb.version>
+        <javaee.api>6.0-5</javaee.api>
+        <scala.version>2.9.2</scala.version>
+        <scala.plugin.version>2.15.2</scala.plugin.version>
+        <junit.version>4.10</junit.version>
     </properties>
     <modules>
         <module>msglnk-gui</module>
@@ -46,20 +50,26 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>1.8.6</version>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.10</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.openejb</groupId>
                 <artifactId>openejb-core</artifactId>
                 <version>${openejb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.openejb</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.api}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

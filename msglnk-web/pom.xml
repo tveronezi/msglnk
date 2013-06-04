@@ -35,29 +35,28 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
-                <configuration>
-                    <providerSelection>1.8</providerSelection>
-                </configuration>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>${scala.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generateStubs</goal>
                             <goal>compile</goal>
-                            <goal>generateTestStubs</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
