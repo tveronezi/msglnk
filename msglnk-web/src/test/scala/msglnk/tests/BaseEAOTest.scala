@@ -56,5 +56,10 @@ class BaseEAOTest {
             Assert.assertNotNull(s)
             Assert.assertEquals(s.getUid, id)
         })
+        adminRunner.run({ Any =>
+            val s: MailSession = baseEAO.findUniqueBy(classOf[MailSession], "name", "default").get
+            Assert.assertNotNull(s)
+            Assert.assertEquals(s.getUid, id)
+        })
     }
 }

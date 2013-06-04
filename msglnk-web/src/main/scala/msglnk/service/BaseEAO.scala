@@ -10,7 +10,7 @@ class BaseEAO {
     @PersistenceContext(unitName = "mailPU")
     var em: EntityManager = _
 
-    def findUniqueBy[T](cls: Class[T], name: String, value: Object): Option[T] = {
+    def findUniqueBy[T, E](cls: Class[T], name: String, value: E): Option[T] = {
         val queryStr = "SELECT e FROM %s e WHERE e.%s = :pValue".format(cls.getName, name)
         val query = em.createQuery(queryStr)
         query.setParameter("pValue", value)
