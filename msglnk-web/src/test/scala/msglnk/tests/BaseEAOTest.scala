@@ -34,7 +34,7 @@ class BaseEAOTest {
     private var id: Long = _
 
 
-    @Before def setUp {
+    @Before def setUp() {
         val p: Properties = new Properties
         p.put("movieDatabase", "new://Resource?type=DataSource")
         p.put("movieDatabase.JdbcDriver", "org.hsqldb.jdbcDriver")
@@ -42,9 +42,10 @@ class BaseEAOTest {
         EJBContainer.createEJBContainer(p).getContext.bind("inject", this)
     }
 
-    @Test def should_create_and_find_bean {
+    @Test def should_create_and_find_bean() {
+        val sessionName = "default"
         val bean: MailSession = new MailSession
-        bean.setName("default")
+        bean.setName(sessionName)
         bean.setConfig(new Scanner(classOf[BaseEAOTest].getResourceAsStream("")).useDelimiter("\\A").next)
         adminRunner.run({ Any =>
             val s: MailSession = baseEAO.create(bean)
@@ -57,7 +58,7 @@ class BaseEAOTest {
             Assert.assertEquals(s.getUid, id)
         })
         adminRunner.run({ Any =>
-            val s: MailSession = baseEAO.findUniqueBy(classOf[MailSession], "name", "default").get
+            val s: MailSession = baseEAO.findUniqueBy(classOf[MailSession], "name", sessionName).get
             Assert.assertNotNull(s)
             Assert.assertEquals(s.getUid, id)
         })

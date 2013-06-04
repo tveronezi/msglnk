@@ -28,7 +28,6 @@
         <javaee.api>6.0-5</javaee.api>
         <scala.version>2.9.2</scala.version>
         <scala.plugin.version>2.15.2</scala.plugin.version>
-        <junit.version>4.10</junit.version>
     </properties>
     <modules>
         <module>msglnk-gui</module>
@@ -57,7 +56,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
+                <version>4.11</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
