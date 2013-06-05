@@ -23,18 +23,20 @@ import msglnk.service.MailSessionService
 import org.junit.{Assert, Test}
 import javax.inject.Inject
 import scala.io.Source
-import javax.ejb.{EJBException, Stateless}
+import javax.ejb.EJBException
 import msglnk.service.exception.MailSessionNotFound
 import msglnk.BaseTest
 import java.io.File
 import org.slf4j.{LoggerFactory, Logger}
+import javax.jms.Session
+import scala.concurrent.ops._
 
-@Stateless
 class MailServiceTest extends BaseTest {
     val LOG: Logger = LoggerFactory.getLogger(classOf[MailServiceTest])
 
     @Inject var adminRunner: AdminRunner = _
     @Inject var mailSessionService: MailSessionService = _
+    @Inject var auxiliary: AuxiliaryBean = _
 
     val sessionName = "MailServiceTest_SessionName"
     val url = getClass.getResource("/default-session.properties")
@@ -61,80 +63,107 @@ class MailServiceTest extends BaseTest {
     @Test
     def should_create_and_find_bean() {
         adminRunner.run({
-            Any =>
-                val session = mailSessionService.saveSession(sessionName, config)
-                Assert.assertNotNull(session)
-                Assert.assertNotNull(session.getUid)
+            val session = mailSessionService.saveSession(sessionName, config)
+            Assert.assertNotNull(session)
+            Assert.assertNotNull(session.getUid)
         })
         adminRunner.run({
-            Any =>
-                val s: Option[MailSession] = mailSessionService.getMailSessionByName(sessionName)
-                s match {
-                    case Some(session) =>
-                        Assert.assertEquals(session.getName, sessionName)
-                    case None =>
-                        Assert.fail("session not found")
-                }
-                Assert.assertNotNull(s)
+            val s: Option[MailSession] = mailSessionService.getMailSessionByName(sessionName)
+            s match {
+                case Some(session) =>
+                    Assert.assertEquals(session.getName, sessionName)
+                case None =>
+                    Assert.fail("session not found")
+            }
+            Assert.assertNotNull(s)
         })
     }
 
     @Test
     def should_not_find_bean() {
         adminRunner.run({
-            Any =>
-                val s: Option[MailSession] = mailSessionService.getMailSessionByName("fooSession")
-                s match {
-                    case Some(session) =>
-                        Assert.fail("session found")
-                    case None =>
-                    // expected
-                }
-                Assert.assertNotNull(s)
+            val s: Option[MailSession] = mailSessionService.getMailSessionByName("fooSession")
+            s match {
+                case Some(session) =>
+                    Assert.fail("session found")
+                case None =>
+                // expected
+            }
+            Assert.assertNotNull(s)
         })
     }
 
     @Test
     def should_not_send_email() {
         adminRunner.run({
-            Any =>
-                try {
-                    mailSessionService.sendMail("sessionFoo", "from", "to", "subject", "text")
-                    Assert.fail("exception expected")
-                }
-                catch {
-                    case ejbe: EJBException => {
-                        if (!classOf[MailSessionNotFound].isInstance(ejbe.getCause)) {
-                            Assert.fail("wrong exception (1)")
-                        }
-                    }
-                    case e: Exception => {
-                        Assert.fail("wrong exception (2)")
+            try {
+                mailSessionService.sendMail("sessionFoo", "from", "to", "subject", "text")
+                Assert.fail("exception expected")
+            }
+            catch {
+                case ejbe: EJBException => {
+                    if (!classOf[MailSessionNotFound].isInstance(ejbe.getCause)) {
+                        Assert.fail("wrong exception (1)")
                     }
                 }
+                case e: Exception => {
+                    Assert.fail("wrong exception (2)")
+                }
+            }
         })
     }
 
     @Test
-    def should_send_email() {
+    def should_send__and_read_email() {
+        val testSessionName = System.currentTimeMillis().toString + "testSession"
+        val testContent = "is this working? %d".format(System.currentTimeMillis())
         configFile match {
             case Some(content) => {
                 adminRunner.run({
-                    Any =>
-                        val testSessionName: String = "testSession"
-                        mailSessionService.saveSession(testSessionName, content)
-                        mailSessionService.sendMail(
-                            testSessionName,
-                            "test@veronezi.org",
-                            "thiago@veronezi.org",
-                            "unit test",
-                            "is this working?")
+                    mailSessionService.saveSession(testSessionName, content)
+                    mailSessionService.sendMail(
+                        testSessionName,
+                        "test@veronezi.org",
+                        "test@veronezi.org",
+                        "unit test %d".format(System.currentTimeMillis()),
+                        testContent)
                 })
             }
             case None => {
                 Assert.fail("No config file found. Check the system variable '%s' and try it again.".format(envKey))
             }
         }
-    }
 
+        val connection = auxiliary.connectionFactory.createConnection()
+        connection.start()
+        val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
+        val consumer = session.createConsumer(auxiliary.newMessageQueue)
+
+        val readMailFuture = future({
+            adminRunner.run({
+                mailSessionService.readMail(testSessionName)
+            })
+        })
+        val contentReceived = future({
+            adminRunner.run({
+                val msg = consumer.receive(20000)
+                if (msg == null) {
+                    None
+                } else {
+                    Option(msg.getStringProperty("content"))
+                }
+            })
+        })
+        readMailFuture()
+        contentReceived() match {
+            case Some(content) => {
+                LOG.info("'content' received -> {}", content)
+                LOG.info("'testContent' sent -> {}", testContent)
+                Assert.assertEquals(testContent.trim, content.trim)
+            }
+            case None => Assert.fail("No message received")
+        }
+
+
+    }
 }

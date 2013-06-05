@@ -183,11 +183,12 @@ class MailSessionService {
                     mailSession.getName, from, to, date, content)
 
                 // Create a message
-                val notification = session.createTextMessage(content)
+                val notification = session.createMessage()
                 notification.setStringProperty("session", mailSession.getName)
                 notification.setStringProperty("from", from)
                 notification.setStringProperty("to", to)
                 notification.setStringProperty("subject", message.getSubject)
+                notification.setStringProperty("content", content)
 
                 // Tell the producer to send the message
                 producer.send(notification)

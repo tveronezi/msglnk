@@ -23,10 +23,8 @@ import msglnk.service.BaseEAO
 import org.junit.Assert
 import org.junit.Test
 import javax.inject.Inject
-import javax.ejb.Stateless
 import msglnk.BaseTest
 
-@Stateless
 class BaseEAOTest extends BaseTest {
     @Inject var adminRunner: AdminRunner = _
     @Inject var baseEAO: BaseEAO = _
@@ -42,55 +40,53 @@ class BaseEAOTest extends BaseTest {
     def should_create_and_find_bean() {
         val sessionName = System.currentTimeMillis().toString + "_test"
         adminRunner.run({
-            Any =>
-                val id = baseEAO.create(createSessionObj(sessionName, "aabbcc")).getUid
-                baseEAO.findById(classOf[MailSession], id) match {
-                    case Some(s) => {
-                        Assert.assertEquals(s.getUid, id)
-                    }
-                    case None => {
-                        Assert.fail("Session not found")
-                    }
+            val id = baseEAO.create(createSessionObj(sessionName, "aabbcc")).getUid
+            baseEAO.findById(classOf[MailSession], id) match {
+                case Some(s) => {
+                    Assert.assertEquals(s.getUid, id)
                 }
+                case None => {
+                    Assert.fail("Session not found")
+                }
+            }
 
-                baseEAO.findUniqueBy(classOf[MailSession], "name", sessionName) match {
-                    case Some(s) => {
-                        Assert.assertEquals(s.getUid, id)
-                    }
-                    case None => {
-                        Assert.fail("Session not found")
-                    }
+            baseEAO.findUniqueBy(classOf[MailSession], "name", sessionName) match {
+                case Some(s) => {
+                    Assert.assertEquals(s.getUid, id)
                 }
+                case None => {
+                    Assert.fail("Session not found")
+                }
+            }
         })
     }
 
     @Test
     def should_create_and_update_bean() {
         adminRunner.run({
-            Any =>
-                val testName = System.currentTimeMillis().toString + "_session"
-                val dummyContentA = "ddeeff"
-                baseEAO.create(createSessionObj(testName, dummyContentA))
-                baseEAO.findUniqueBy(classOf[MailSession], "name", testName) match {
-                    case Some(mailSession) => {
-                        Assert.assertEquals(mailSession.getConfig, dummyContentA)
+            val testName = System.currentTimeMillis().toString + "_session"
+            val dummyContentA = "ddeeff"
+            baseEAO.create(createSessionObj(testName, dummyContentA))
+            baseEAO.findUniqueBy(classOf[MailSession], "name", testName) match {
+                case Some(mailSession) => {
+                    Assert.assertEquals(mailSession.getConfig, dummyContentA)
 
-                        val dummyContentB = "gghhii"
-                        mailSession.setConfig(dummyContentB)
-                        baseEAO.create(mailSession)
-                        baseEAO.findUniqueBy(classOf[MailSession], "name", testName) match {
-                            case Some(mailSession) => {
-                                Assert.assertEquals(mailSession.getConfig, dummyContentB)
-                            }
-                            case None => {
-                                Assert.fail("Session not found")
-                            }
+                    val dummyContentB = "gghhii"
+                    mailSession.setConfig(dummyContentB)
+                    baseEAO.create(mailSession)
+                    baseEAO.findUniqueBy(classOf[MailSession], "name", testName) match {
+                        case Some(mailSession) => {
+                            Assert.assertEquals(mailSession.getConfig, dummyContentB)
+                        }
+                        case None => {
+                            Assert.fail("Session not found")
                         }
                     }
-                    case None => {
-                        Assert.fail("Session not found")
-                    }
                 }
+                case None => {
+                    Assert.fail("Session not found")
+                }
+            }
         })
     }
 
