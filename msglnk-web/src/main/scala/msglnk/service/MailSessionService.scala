@@ -48,9 +48,14 @@ class MailSessionService {
         baseEAO.create(session)
     }
 
-    private def getSession(mailSession: MailSession): Session = {
+    private def loadProperties(content: String) = {
         val properties = new Properties()
-        properties.load(new StringReader(mailSession.getConfig))
+        properties.load(new StringReader(content))
+        properties
+    }
+
+    private def getSession(mailSession: MailSession): Session = {
+        val properties = loadProperties(mailSession.getConfig)
         val user = properties.getProperty("ux_session_user_account")
         val password = properties.getProperty("ux_session_user_password")
         Session.getInstance(properties, new Authenticator() {
@@ -60,9 +65,12 @@ class MailSessionService {
         })
     }
 
-    def sendMail(sessionName: String, from: String, to: String, subject: String, text: String) {
+    def sendMail(sessionName: String, to: String, subject: String, text: String) {
         getMailSessionByName(sessionName) match {
             case Some(mailSession) => {
+                val sessionProperties = loadProperties(mailSession.getConfig)
+                val from = sessionProperties.getProperty("ux_session_user_account")
+
                 LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
                     sessionName, from, to, subject, text)
 

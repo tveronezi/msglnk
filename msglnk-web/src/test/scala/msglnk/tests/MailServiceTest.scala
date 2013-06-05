@@ -97,7 +97,7 @@ class MailServiceTest extends BaseTest {
     def should_not_send_email() {
         adminRunner.run({
             try {
-                mailSessionService.sendMail("sessionFoo", "from", "to", "subject", "text")
+                mailSessionService.sendMail("sessionFoo", "to", "subject", "text")
                 Assert.fail("exception expected")
             }
             catch {
@@ -117,16 +117,24 @@ class MailServiceTest extends BaseTest {
     def should_send__and_read_email() {
         val testSessionName = System.currentTimeMillis().toString + "testSession"
         val testContent = "is this working? %d".format(System.currentTimeMillis())
+
+        val connection = auxiliary.connectionFactory.createConnection()
+        connection.start()
+        val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
+        val producer = session.createProducer(auxiliary.sendMessageQueue)
+        val consumer = session.createConsumer(auxiliary.newMessageQueue)
+
         configFile match {
             case Some(content) => {
                 adminRunner.run({
                     mailSessionService.saveSession(testSessionName, content)
-                    mailSessionService.sendMail(
-                        testSessionName,
-                        "test@veronezi.org",
-                        "test@veronezi.org",
-                        "unit test %d".format(System.currentTimeMillis()),
-                        testContent)
+
+                    val request = session.createMessage()
+                    request.setStringProperty("sessionName", testSessionName)
+                    request.setStringProperty("to", "test@veronezi.org")
+                    request.setStringProperty("subject", "unit test %d".format(System.currentTimeMillis()))
+                    request.setStringProperty("text", testContent)
+                    producer.send(request)
                 })
             }
             case None => {
@@ -134,10 +142,8 @@ class MailServiceTest extends BaseTest {
             }
         }
 
-        val connection = auxiliary.connectionFactory.createConnection()
-        connection.start()
-        val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
-        val consumer = session.createConsumer(auxiliary.newMessageQueue)
+        // giving time to the email to be actually sent.
+        Thread.sleep(2000)
 
         val readMailFuture = future({
             adminRunner.run({
