@@ -61,19 +61,20 @@ class MailSessionService {
     }
 
     def sendMail(sessionName: String, from: String, to: String, subject: String, text: String) {
-        val mSession = getMailSessionByName(sessionName)
-        mSession match {
+        getMailSessionByName(sessionName) match {
+            case Some(mailSession) => {
+                LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
+                    sessionName, from, to, subject, text)
+
+                val message = new MimeMessage(getSession(mailSession))
+                message.setFrom(new InternetAddress(from))
+                message.setRecipients(Message.RecipientType.TO, to)
+                message.setSubject(subject)
+                message.setText(text)
+                Transport.send(message)
+            }
             case None => throw new MailSessionNotFound(sessionName)
         }
-        LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
-            sessionName, from, to, subject, text)
-
-        val message = new MimeMessage(getSession(mSession.get))
-        message.setFrom(new InternetAddress(from))
-        message.setRecipients(Message.RecipientType.TO, to)
-        message.setSubject(subject)
-        message.setText(text)
-        Transport.send(message)
     }
 
     def readMail(sessionName: String) {

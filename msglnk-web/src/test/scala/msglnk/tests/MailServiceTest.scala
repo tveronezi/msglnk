@@ -57,7 +57,6 @@ class MailServiceTest extends BaseTest {
             }
         }
     }
-    val testSessionName: String = "testSession"
 
     @Test
     def should_create_and_find_bean() {
@@ -117,14 +116,23 @@ class MailServiceTest extends BaseTest {
     }
 
     @Test
-    def should_read_email() {
+    def should_send_email() {
         configFile match {
             case Some(content) => {
-                //mailSessionService.saveSession(testSessionName, content)
-
+                adminRunner.run({
+                    Any =>
+                        val testSessionName: String = "testSession"
+                        mailSessionService.saveSession(testSessionName, content)
+                        mailSessionService.sendMail(
+                            testSessionName,
+                            "test@veronezi.org",
+                            "thiago@veronezi.org",
+                            "unit test",
+                            "is this working?")
+                })
             }
             case None => {
-                LOG.warn("No config file found. Check the system variable '{}' and try it again.", envKey)
+                Assert.fail("No config file found. Check the system variable '%s' and try it again.".format(envKey))
             }
         }
     }
