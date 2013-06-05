@@ -11,8 +11,7 @@ import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties
 import java.io.{ByteArrayOutputStream, StringReader}
-import javax.mail.Session
-import javax.mail.Message
+import javax.mail.{Session, Message}
 import scala.Some
 
 @Stateless
@@ -34,9 +33,17 @@ class MailSessionService {
         baseEAO.findUniqueBy(classOf[MailSession], "name", name)
     }
 
-    def createSession(name: String, config: String): MailSession = {
-        val session = new MailSession
-        session.setName(name)
+    def saveSession(name: String, config: String): MailSession = {
+        val session = {
+            getMailSessionByName(name) match {
+                case Some(existing) => existing
+                case None => {
+                    val newSession = new MailSession
+                    newSession.setName(name)
+                    newSession
+                }
+            }
+        }
         session.setConfig(config)
         baseEAO.create(session)
     }
@@ -117,6 +124,9 @@ class MailSessionService {
                     }
                 }
             }
+            case None => {
+                LOG.warn("Impossible to read message from '{}'. Session not found.", sessionName)
+            }
         }
     }
 
@@ -152,11 +162,8 @@ class MailSessionService {
         val date = message.getSentDate
         val content = getMessageContent(message)
 
-
         var connection: Connection = null
         var session: javax.jms.Session = null
-
-
         try {
             connection = this.factory.createConnection()
             connection.start()
@@ -167,7 +174,6 @@ class MailSessionService {
             // Create a MessageProducer from the Session to the Topic or Queue
             val producer = session.createProducer(this.newEmailQueue)
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT)
-
 
             for (recipient <- recipients) {
                 val to = recipient.asInstanceOf[InternetAddress].getAddress
@@ -184,7 +190,6 @@ class MailSessionService {
 
                 // Tell the producer to send the message
                 producer.send(notification)
-
             }
 
         } finally {

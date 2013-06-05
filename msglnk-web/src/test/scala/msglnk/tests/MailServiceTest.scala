@@ -26,21 +26,44 @@ import scala.io.Source
 import javax.ejb.{EJBException, Stateless}
 import msglnk.service.exception.MailSessionNotFound
 import msglnk.BaseTest
+import java.io.File
+import org.slf4j.{LoggerFactory, Logger}
 
 @Stateless
 class MailServiceTest extends BaseTest {
+    val LOG: Logger = LoggerFactory.getLogger(classOf[MailServiceTest])
+
     @Inject var adminRunner: AdminRunner = _
     @Inject var mailSessionService: MailSessionService = _
 
     val sessionName = "MailServiceTest_SessionName"
     val url = getClass.getResource("/default-session.properties")
-    val config = Source.fromURL(url)
+    val config = Source.fromURL(url).mkString
+
+    val envKey = "MSGLNK_MAIL_SESSION_CONFIG"
+    val configFile = {
+        val testMailConfigPath = System.getenv(envKey)
+        if (testMailConfigPath == null) {
+            LOG.warn("The environment variable {} is not defined.", envKey)
+            None
+        } else {
+            val file = new File(testMailConfigPath)
+            if (file.exists()) {
+                val content = Source.fromFile(file).mkString
+                Option(content)
+            } else {
+                LOG.warn("Unable to find the file path {}.", file.getAbsolutePath)
+                None
+            }
+        }
+    }
+    val testSessionName: String = "testSession"
 
     @Test
     def should_create_and_find_bean() {
         adminRunner.run({
             Any =>
-                val session = mailSessionService.createSession(sessionName, config.mkString)
+                val session = mailSessionService.saveSession(sessionName, config)
                 Assert.assertNotNull(session)
                 Assert.assertNotNull(session.getUid)
         })
@@ -92,4 +115,18 @@ class MailServiceTest extends BaseTest {
                 }
         })
     }
+
+    @Test
+    def should_read_email() {
+        configFile match {
+            case Some(content) => {
+                //mailSessionService.saveSession(testSessionName, content)
+
+            }
+            case None => {
+                LOG.warn("No config file found. Check the system variable '{}' and try it again.", envKey)
+            }
+        }
+    }
+
 }

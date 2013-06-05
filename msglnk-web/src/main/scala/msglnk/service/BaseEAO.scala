@@ -3,6 +3,7 @@ package msglnk.service
 import javax.ejb.Stateless
 import javax.annotation.security.RolesAllowed
 import javax.persistence.{NoResultException, Query, PersistenceContext, EntityManager}
+import msglnk.data.BaseEntity
 
 @Stateless
 @RolesAllowed(Array("solution-admin"))
@@ -35,8 +36,15 @@ class BaseEAO {
         }
     }
 
-    def create[T](bean: T): T = {
-        em.persist(bean)
+    def create[T <: BaseEntity](bean: T): T = {
+        if (bean.getUid == null) {
+            em.persist(bean)
+            em.flush()
+        } else {
+            // We don't need to do anything.
+            // Changes made to the entity will be persisted once the transaction is committed.
+        }
+
         bean
     }
 
