@@ -19,22 +19,24 @@ package msglnk.tests
 
 import msglnk.data.MailSession
 import msglnk.runners.AdminRunner
-import msglnk.service.BaseEAO
+import msglnk.service.MailSessionService
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import javax.ejb.embeddable.EJBContainer
 import javax.inject.Inject
 import java.util.Properties
-import java.util.Scanner
+import scala.io.Source
 import javax.ejb.Stateless
 
 @Stateless
-class BaseEAOTest {
+class MailServiceTest {
     @Inject var adminRunner: AdminRunner = _
-    @Inject var baseEAO: BaseEAO = _
-    private var id: Long = _
-    private val sessionName = "default"
+    @Inject var mailSessionService: MailSessionService = _
+
+    val sessionName = "MailServiceTest_SessionName"
+    val url = getClass.getResource("/default-session.properties")
+    val config = Source.fromURL(url)
 
     @Before def setUp() {
         val p: Properties = new Properties
@@ -45,26 +47,36 @@ class BaseEAOTest {
     }
 
     @Test def should_create_and_find_bean() {
-        val bean: MailSession = new MailSession
-        bean.setName(sessionName)
-        bean.setConfig(new Scanner(classOf[BaseEAOTest].getResourceAsStream("")).useDelimiter("\\A").next)
         adminRunner.run({
             Any =>
-                val s = baseEAO.create(bean)
-                Assert.assertNotNull(s)
-                id = s.getUid
+                val session = mailSessionService.createSession(sessionName, config.mkString)
+                Assert.assertNotNull(session)
+                Assert.assertNotNull(session.getUid)
         })
         adminRunner.run({
             Any =>
-                val s = baseEAO.findById(classOf[MailSession], id).get
+                val s: Option[MailSession] = mailSessionService.getMailSessionByName(sessionName)
+                s match {
+                    case Some(session) =>
+                        Assert.assertEquals(session.getName, sessionName)
+                    case None =>
+                        Assert.fail("session not found")
+                }
                 Assert.assertNotNull(s)
-                Assert.assertEquals(s.getUid, id)
         })
+    }
+
+    @Test def should_not_find_bean() {
         adminRunner.run({
             Any =>
-                val s = baseEAO.findUniqueBy(classOf[MailSession], "name", sessionName).get
+                val s: Option[MailSession] = mailSessionService.getMailSessionByName("fooSession")
+                s match {
+                    case Some(session) =>
+                        Assert.fail("session found")
+                    case None =>
+                    // expected
+                }
                 Assert.assertNotNull(s)
-                Assert.assertEquals(s.getUid, id)
         })
     }
 }
