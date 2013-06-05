@@ -20,17 +20,15 @@ package msglnk.tests
 import msglnk.data.MailSession
 import msglnk.runners.AdminRunner
 import msglnk.service.MailSessionService
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-import javax.ejb.embeddable.EJBContainer
+import org.junit.{Assert, Test}
 import javax.inject.Inject
-import java.util.Properties
 import scala.io.Source
-import javax.ejb.Stateless
+import javax.ejb.{EJBException, Stateless}
+import msglnk.service.exception.MailSessionNotFound
+import msglnk.BaseTest
 
 @Stateless
-class MailServiceTest {
+class MailServiceTest extends BaseTest {
     @Inject var adminRunner: AdminRunner = _
     @Inject var mailSessionService: MailSessionService = _
 
@@ -38,15 +36,8 @@ class MailServiceTest {
     val url = getClass.getResource("/default-session.properties")
     val config = Source.fromURL(url)
 
-    @Before def setUp() {
-        val p: Properties = new Properties
-        p.put("movieDatabase", "new://Resource?type=DataSource")
-        p.put("movieDatabase.JdbcDriver", "org.hsqldb.jdbcDriver")
-        p.put("movieDatabase.JdbcUrl", "jdbc:hsqldb:mem:testdb")
-        EJBContainer.createEJBContainer(p).getContext.bind("inject", this)
-    }
-
-    @Test def should_create_and_find_bean() {
+    @Test
+    def should_create_and_find_bean() {
         adminRunner.run({
             Any =>
                 val session = mailSessionService.createSession(sessionName, config.mkString)
@@ -66,7 +57,8 @@ class MailServiceTest {
         })
     }
 
-    @Test def should_not_find_bean() {
+    @Test
+    def should_not_find_bean() {
         adminRunner.run({
             Any =>
                 val s: Option[MailSession] = mailSessionService.getMailSessionByName("fooSession")
@@ -77,6 +69,27 @@ class MailServiceTest {
                     // expected
                 }
                 Assert.assertNotNull(s)
+        })
+    }
+
+    @Test
+    def should_not_send_email() {
+        adminRunner.run({
+            Any =>
+                try {
+                    mailSessionService.sendMail("sessionFoo", "from", "to", "subject", "text")
+                    Assert.fail("exception expected")
+                }
+                catch {
+                    case ejbe: EJBException => {
+                        if (!classOf[MailSessionNotFound].isInstance(ejbe.getCause)) {
+                            Assert.fail("wrong exception (1)")
+                        }
+                    }
+                    case e: Exception => {
+                        Assert.fail("wrong exception (2)")
+                    }
+                }
         })
     }
 }

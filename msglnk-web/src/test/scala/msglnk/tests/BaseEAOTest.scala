@@ -21,28 +21,18 @@ import msglnk.data.MailSession
 import msglnk.runners.AdminRunner
 import msglnk.service.BaseEAO
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
-import javax.ejb.embeddable.EJBContainer
 import javax.inject.Inject
-import java.util.Properties
 import java.util.Scanner
 import javax.ejb.Stateless
+import msglnk.BaseTest
 
 @Stateless
-class BaseEAOTest {
+class BaseEAOTest extends BaseTest {
     @Inject var adminRunner: AdminRunner = _
     @Inject var baseEAO: BaseEAO = _
     private var id: Long = _
     private val sessionName = "default"
-
-    @Before def setUp() {
-        val p: Properties = new Properties
-        p.put("movieDatabase", "new://Resource?type=DataSource")
-        p.put("movieDatabase.JdbcDriver", "org.hsqldb.jdbcDriver")
-        p.put("movieDatabase.JdbcUrl", "jdbc:hsqldb:mem:testdb")
-        EJBContainer.createEJBContainer(p).getContext.bind("inject", this)
-    }
 
     @Test def should_create_and_find_bean() {
         val bean: MailSession = new MailSession
