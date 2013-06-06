@@ -1,5 +1,5 @@
 .idea/
-msglnk.iml
+*.iml
 msglnk-gui/target/
 msglnk-web/target/
 msglnk-resources/target/
