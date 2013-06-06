@@ -35,10 +35,10 @@ class Mail {
     @Consumes(Array("application/json"))
     def send(mailDto: EmailDto) {
         mailService.sendMail(
-            mailDto.getSession(),
-            mailDto.getTo(),
-            mailDto.getSubject(),
-            mailDto.getText()
+            mailDto.getSession,
+            mailDto.getTo,
+            mailDto.getSubject,
+            mailDto.getText
         )
     }
 
