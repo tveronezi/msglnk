@@ -116,25 +116,13 @@ class MailServiceTest extends BaseTest {
     @Test
     def should_send__and_read_email() {
         val testSessionName = System.currentTimeMillis().toString + "testSession"
-        val testContent = "is this working? %d".format(System.currentTimeMillis())
 
-        val connection = auxiliary.connectionFactory.createConnection()
-        connection.start()
-        val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
-        val producer = session.createProducer(auxiliary.sendMessageQueue)
-        val consumer = session.createConsumer(auxiliary.newMessageQueue)
-
+        // first, create session and read all old email
         configFile match {
             case Some(content) => {
                 adminRunner.run({
                     mailSessionService.saveSession(testSessionName, content)
-
-                    val request = session.createMessage()
-                    request.setStringProperty("sessionName", testSessionName)
-                    request.setStringProperty("to", "test@veronezi.org")
-                    request.setStringProperty("subject", "unit test %d".format(System.currentTimeMillis()))
-                    request.setStringProperty("text", testContent)
-                    producer.send(request)
+                    mailSessionService.readMailFromAllSessions()
                 })
             }
             case None => {
@@ -142,12 +130,27 @@ class MailServiceTest extends BaseTest {
             }
         }
 
+        val testContent = "is this working? %d".format(System.currentTimeMillis())
+        val connection = auxiliary.connectionFactory.createConnection()
+        connection.start()
+        val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
+        val producer = session.createProducer(auxiliary.sendMessageQueue)
+        val consumer = session.createConsumer(auxiliary.newMessageQueue)
+
+        // send request to the queue
+        val request = session.createMessage()
+        request.setStringProperty("sessionName", testSessionName)
+        request.setStringProperty("to", "test@veronezi.org")
+        request.setStringProperty("subject", "unit test %d".format(System.currentTimeMillis()))
+        request.setStringProperty("text", testContent)
+        producer.send(request)
+
         // giving time to the email to be actually sent.
         Thread.sleep(2000)
 
         val readMailFuture = future({
             adminRunner.run({
-                mailSessionService.readMail(testSessionName)
+                mailSessionService.readMailFromAllSessions()
             })
         })
         val contentReceived = future({

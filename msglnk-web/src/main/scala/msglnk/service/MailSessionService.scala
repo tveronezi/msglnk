@@ -85,7 +85,19 @@ class MailSessionService {
         }
     }
 
-    def readMail(sessionName: String) {
+    def readMailFromAllSessions() {
+        val sessions = baseEAO.findAll(classOf[MailSession])
+        for (session <- sessions) {
+            try {
+                readMail(session.getName)
+            }
+            catch {
+                case e: Exception => LOG.error("Impossible ro read email", e)
+            }
+        }
+    }
+
+    private def readMail(sessionName: String) {
         getMailSessionByName(sessionName) match {
             case Some(mailSession) => {
                 LOG.info("Reading emails from session '{}'", mailSession.getName)
@@ -117,8 +129,9 @@ class MailSessionService {
                                 case e: Exception => {
                                     LOG.error("Unable to read the email", e)
                                 }
+                            } finally {
+                                message.setFlag(Flags.Flag.DELETED, true)
                             }
-                            message.setFlag(Flags.Flag.DELETED, true)
                         }
 
                     } finally {
