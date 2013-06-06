@@ -1,3 +1,5 @@
+.idea/
+msglnk.iml
 msglnk-gui/target/
 msglnk-web/target/
 msglnk-resources/target/
