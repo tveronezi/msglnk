@@ -18,10 +18,9 @@
 
 package msglnk.mdb
 
-import javax.ejb.MessageDriven
+import javax.ejb.{EJB, MessageDriven}
 import org.slf4j.LoggerFactory
 import javax.jms.{Message, MessageListener}
-import javax.inject.Inject
 import msglnk.service.MailSessionService
 import javax.annotation.security.RunAs
 
@@ -30,7 +29,7 @@ import javax.annotation.security.RunAs
 class SendEmailRequest extends MessageListener {
     val LOG = LoggerFactory.getLogger(classOf[SendEmailRequest])
 
-    @Inject var mailSession: MailSessionService = _
+    @EJB var mailSession: MailSessionService = _
 
     def onMessage(message: Message) {
         val sessionName = message.getStringProperty("sessionName")
