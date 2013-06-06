@@ -25,10 +25,11 @@ YUI.add('ux-view-home', function (Y) {
             '.ux-save-btn': {click: 'saveSession'}
         },
         saveSession: function () {
-            var txt = this.get('container').one('.ux-session-properties');
-            var value = txt.get('value');
+            var sessionNameTxt = this.get('container').one('.ux-session-name');
+            var configTxt = this.get('container').one('.ux-session-properties');
             this.fire('ux-save-email-session', {
-                config: value
+                config: configTxt.get('value'),
+                name: sessionNameTxt.get('value')
             });
             this.render();
         },

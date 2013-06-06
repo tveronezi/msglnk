@@ -80,7 +80,8 @@ YUI.add('ux-app', function (Y) {
         Y.io(ROOT_URL + 'rest/session', {
             method: 'POST',
             data: {
-                config: evt.config
+                config: evt.config,
+                name: evt.name
             },
             on: {
                 complete: function (transactionid, response, args) {
