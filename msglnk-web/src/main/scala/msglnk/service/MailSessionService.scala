@@ -124,7 +124,15 @@ class MailSessionService {
                 store.connect()
 
                 try {
-                    val folder = store.getDefaultFolder.getFolder("INBOX")
+                    val folderName = {
+                        val props = loadProperties(mailSession.getConfig)
+                        if(props.contains("ux_session_folder")) {
+                            props.getProperty("ux_session_folder")
+                        } else {
+                            "INBOX"
+                        }
+                    }
+                    val folder = store.getDefaultFolder.getFolder(folderName)
                     try {
                         folder.open(Folder.READ_WRITE)
                         val messages = folder.getMessages
