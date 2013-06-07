@@ -34,8 +34,7 @@ class BaseEAO {
     def findAll[T](cls: Class[T]): Set[T] = {
         val queryStr = "SELECT e FROM %s e".format(cls.getName)
         val query = em.createQuery(queryStr)
-        val list = query.getResultList.asInstanceOf[java.util.List[T]]
-        list.toSet
+        query.getResultList.asInstanceOf[java.util.List[T]].toSet
     }
 
     def findUniqueBy[T, E](cls: Class[T], name: String, value: E): Option[T] = {

@@ -91,4 +91,19 @@ class BaseEAOTest extends BaseTest {
         })
     }
 
+    @Test
+    def should_list_all_beans() {
+        val existingSessionsCount = adminRunner.run({
+            baseEAO.findAll(classOf[MailSession])
+        }).size
+        val sessionsCount = 300
+        adminRunner.run({
+            for (i <- 1 to sessionsCount) baseEAO.create(createSessionObj(i.toString, ""))
+        })
+        val sessions = adminRunner.run({
+            baseEAO.findAll(classOf[MailSession])
+        })
+        Assert.assertEquals(sessionsCount + existingSessionsCount, sessions.size)
+    }
+
 }

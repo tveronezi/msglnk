@@ -110,7 +110,7 @@ class MailSessionService {
                 readMail(session.getName)
             }
             catch {
-                case e: Exception => LOG.error("Impossible ro read email", e)
+                case e: Exception => LOG.error("Impossible to read email", e)
             }
         }
     }
