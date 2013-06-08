@@ -24,7 +24,7 @@ import javax.persistence.{NoResultException, Query, PersistenceContext, EntityMa
 import msglnk.data.BaseEntity
 import collection.JavaConversions._
 
-@Stateless
+@Stateless(name = "msglnk-BaseEAO")
 @RolesAllowed(Array("solution-admin"))
 class BaseEAO {
 

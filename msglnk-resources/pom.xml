@@ -20,11 +20,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>msglnk</groupId>
+        <groupId>buildnplay</groupId>
         <artifactId>msglnk</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>msglnk</groupId>
     <artifactId>msglnk-resources</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>

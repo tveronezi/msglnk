@@ -48,7 +48,11 @@ class MailSessionService {
     var baseEAO: BaseEAO = _
 
     def getMailSessionByName(name: String): Option[MailSession] = {
-        baseEAO.findUniqueBy(classOf[MailSession], "name", name)
+        if(name == null) {
+            baseEAO.findUniqueBy(classOf[MailSession], "name", "default")
+        } else {
+            baseEAO.findUniqueBy(classOf[MailSession], "name", name)
+        }
     }
 
     def saveSession(name: String, config: String): MailSession = {
