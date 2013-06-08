@@ -28,7 +28,7 @@ import msglnk.service.exception.MailSessionNotFound
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties
-import java.io.{ByteArrayOutputStream, StringReader}
+import java.io.StringReader
 import javax.mail.{Session, Message}
 import scala.Some
 
@@ -48,7 +48,7 @@ class MailSessionService {
     var baseEAO: BaseEAO = _
 
     def getMailSessionByName(name: String): Option[MailSession] = {
-        if(name == null) {
+        if (name == null) {
             baseEAO.findUniqueBy(classOf[MailSession], "name", "default")
         } else {
             baseEAO.findUniqueBy(classOf[MailSession], "name", name)
@@ -130,7 +130,7 @@ class MailSessionService {
                 try {
                     val folderName = {
                         val props = loadProperties(mailSession.getConfig)
-                        if(props.contains("ux_session_folder")) {
+                        if (props.contains("ux_session_folder")) {
                             props.getProperty("ux_session_folder")
                         } else {
                             "INBOX"
@@ -182,28 +182,44 @@ class MailSessionService {
         }
     }
 
-    def getMessageContent(message: Message): String = {
-        message.getContent match {
-            case s: String => s
+    def getContentText(any: AnyRef): Option[String] = {
+        any match {
+            case s: String => Option(s)
             case p: Part => {
-                val out = new ByteArrayOutputStream()
-                p.writeTo(out)
-                val contentType = message.getContentType
-                if (contentType.contains("ISO-8859-1")) {
-                    out.toString("ISO-8859-1")
-                } else if (contentType.contains("UTF-8")) {
-                    out.toString("UTF-8")
-                } else {
-                    out.toString
-                }
+                Option(p.getContent.toString)
             }
             case mp: Multipart => {
-                LOG.warn("This application does not know how to read Multipart messages (yet)")
-                ""
+                getMultipartContentText(0, mp)
             }
+            case _ => None
+        }
+    }
+
+    def getMultipartContentText(index: Int, mp: Multipart): Option[String] = {
+        if (index >= mp.getCount) {
+            None
+        } else {
+            getContentText(mp.getBodyPart(index)) match {
+                case None => {
+                    if (index + 1 < mp.getCount) {
+                        getMultipartContentText(index + 1, mp)
+                    } else {
+                        None
+                    }
+                }
+                case Some(text) => Option(text)
+            }
+        }
+    }
+
+    def getMessageContent(message: Message): Option[String] = {
+        message.getContent match {
+            case s: String => getContentText(s)
+            case s: Part => getContentText(s)
+            case s: Multipart => getContentText(s)
             case other => {
                 LOG.warn("This application does not know how to read this type of message ({})", other.getClass.getName)
-                ""
+                None
             }
         }
     }
@@ -239,8 +255,12 @@ class MailSessionService {
                 notification.setStringProperty("from", from)
                 notification.setStringProperty("to", to)
                 notification.setStringProperty("subject", message.getSubject)
-                notification.setStringProperty("content", content)
-
+                notification.setStringProperty("content", {
+                    content match {
+                        case Some(text) => text
+                        case None => ""
+                    }
+                })
                 // Tell the producer to send the message
                 producer.send(notification)
             }
