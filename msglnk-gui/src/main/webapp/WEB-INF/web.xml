@@ -22,6 +22,14 @@
 
     <display-name>MsgLnk</display-name>
 
+    <session-config>
+        <session-timeout>5</session-timeout>
+    </session-config>
+
+    <listener>
+        <listener-class>msglnk.SessionListener</listener-class>
+    </listener>
+
     <!-- The trick is to put all your static files under the same directory and map the "default" servlet to it -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>
