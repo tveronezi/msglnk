@@ -25,29 +25,29 @@ YUI.add('ux-keep-alive', function (Y) {
 
     function scheduleNext() {
         if (timeoutKey !== null) {
-            clearInterval(timeoutKey);
+            window.clearInterval(timeoutKey);
             window.console.log('keep-alive callback canceled.', timeoutKey);
             timeoutKey = null;
         }
-        timeoutKey = setTimeout(timeoutCallback, DELAY);
-        window.console.log('keep-alive callback created.', timeoutKey);
-    }
-
-    function timeoutCallback() {
-        Y.io(window.ROOT_URL + 'rest/keep-alive', {
-            method: 'GET',
-            on: {
-                success: function () {
-                    scheduleNext();
-                },
-                failure: function () {
-                    window.console.error('keep-alive callback error.');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 10000);
+        function timeoutCallback() {
+            Y.io(window.ROOT_URL + 'rest/keep-alive', {
+                method: 'GET',
+                on: {
+                    success: function () {
+                        scheduleNext();
+                    },
+                    failure: function () {
+                        window.console.error('keep-alive callback error.');
+                        window.setTimeout(function () {
+                            window.location.reload();
+                        }, 10000);
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        timeoutKey = window.setTimeout(timeoutCallback, DELAY);
+        window.console.log('keep-alive callback created.', timeoutKey);
     }
 
     Y.on('io:start', function () {
