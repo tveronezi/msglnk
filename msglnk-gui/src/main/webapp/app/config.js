@@ -11,7 +11,7 @@ var YUI_CONF = {
                 'ux-class': 'app/js/class.js',
                 'ux-app': {
                     requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console', 'ux-class',
-                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-keep-alive'
+                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-keep-alive', 'ux-growl'
                     ],
                     path: 'app/js/app.js'
                 },
@@ -40,6 +40,10 @@ var YUI_CONF = {
                 'ux-view-email-send': {
                     requires: ['base', 'ux-templates'],
                     path: 'app/js/view/email-send.js'
+                },
+                'ux-growl': {
+                    requires: ['base', 'ux-templates', 'anim'],
+                    path: 'app/js/view/growl.js'
                 }
             }
 

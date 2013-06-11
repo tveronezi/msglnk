@@ -98,8 +98,15 @@ YUI.add('ux-app', function (Y) {
                 'Content-Type': 'application/json'
             },
             on: {
-                complete: function (transactionid, response, args) {
-                    // no-op
+                start: function () {
+                    Y.ux.Growl.showNotification('info', Y.ux.Messages.get('email.read.triggered'));
+                },
+                failure: function () {
+                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.read.error'));
+                },
+                success: function (transactionid, response, args) {
+                    var result = Y.JSON.parse(response.responseText);
+                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.read.success'));
                 }
             }
         });

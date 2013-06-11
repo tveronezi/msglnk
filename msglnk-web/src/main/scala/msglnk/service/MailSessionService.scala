@@ -107,19 +107,22 @@ class MailSessionService {
         }
     }
 
-    def readMailFromAllSessions() {
+    def readMailFromAllSessions(): Int = {
         val sessions = baseEAO.findAll(classOf[MailSession])
+        var number = 0
         for (session <- sessions) {
             try {
-                readMail(session.getName)
+                number = number + readMail(session.getName)
             }
             catch {
                 case e: Exception => LOG.error("Impossible to read email", e)
             }
         }
+        number
     }
 
-    private def readMail(sessionName: String) {
+    private def readMail(sessionName: String): Int = {
+        var number = 0
         getMailSessionByName(sessionName) match {
             case Some(mailSession) => {
                 LOG.info("Reading emails from session '{}'", mailSession.getName)
@@ -140,6 +143,7 @@ class MailSessionService {
                     try {
                         folder.open(Folder.READ_WRITE)
                         val messages = folder.getMessages
+                        number = messages.size
 
                         // Use a suitable FetchProfile
                         val fp = new FetchProfile()
@@ -180,6 +184,7 @@ class MailSessionService {
                 LOG.warn("Impossible to read message from '{}'. Session not found.", sessionName)
             }
         }
+        number
     }
 
     def getContentText(any: AnyRef): Option[String] = {

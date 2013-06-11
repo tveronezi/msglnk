@@ -20,7 +20,7 @@ package msglnk.rest
 
 import javax.ejb.Stateless
 import javax.ws.rs.{Consumes, POST, Path, Produces}
-import msglnk.dto.EmailDto
+import msglnk.dto.{NewEmailsDto, EmailDto}
 import msglnk.service.MailSessionService
 import javax.inject.Inject
 
@@ -44,7 +44,9 @@ class Mail {
 
     @POST
     @Path("/trigger-read")
-    def triggerRead() {
-        mailService.readMailFromAllSessions()
+    def triggerRead() = {
+        def result = new NewEmailsDto
+        result.setNumber(mailService.readMailFromAllSessions())
+        result
     }
 }

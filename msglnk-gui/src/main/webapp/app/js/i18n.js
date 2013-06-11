@@ -38,6 +38,9 @@ YUI.add('ux-i18n', function (Y) {
         'trigger.email.read': 'Read emails from remote server',
         'default.email.session.configuration': 'Configuration',
         'save.session.config': 'Save session configuration',
+        'email.read.triggered': 'Reading emails...',
+        'email.read.error': 'Impossible to read the emails. Checkout your log messages.',
+        'email.read.success': 'Done reading emails',
         'dummy': 'dummy'
     };
 

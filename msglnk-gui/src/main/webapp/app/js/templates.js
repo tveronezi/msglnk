@@ -23,7 +23,9 @@ YUI.add('ux-templates', function (Y) {
     var files = [
         'about',
         'home',
-        'email-send'
+        'email-send',
+        'growl',
+        'growl-container'
     ];
 
     // A map will all the handlebars templates.
