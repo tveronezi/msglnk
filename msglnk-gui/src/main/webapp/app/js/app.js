@@ -65,7 +65,12 @@ YUI.add('ux-app', function (Y) {
                 emailDto: data
             }),
             on: {
-                complete: function (transactionid, response, args) {
+                failure: function (transactionid, response, args) {
+                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.send.error'));
+                    app.showView('email-send', {});
+                },
+                success: function (transactionid, response, args) {
+                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.send.success'));
                     app.showView('email-send', {});
                 }
             }
@@ -84,8 +89,13 @@ YUI.add('ux-app', function (Y) {
                 name: evt.name
             },
             on: {
-                complete: function (transactionid, response, args) {
-                    // no-op
+                failure: function () {
+                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('save.session.error'));
+                },
+                success: function (transactionid, response, args) {
+                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
+                        name: evt.name
+                    }));
                 }
             }
         });
@@ -105,7 +115,6 @@ YUI.add('ux-app', function (Y) {
                     Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.read.error'));
                 },
                 success: function (transactionid, response, args) {
-                    var result = Y.JSON.parse(response.responseText);
                     Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.read.success'));
                 }
             }
