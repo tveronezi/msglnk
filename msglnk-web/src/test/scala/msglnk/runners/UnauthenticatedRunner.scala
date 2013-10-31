@@ -18,15 +18,15 @@
 
 package msglnk.runners
 
-import javax.annotation.security.RunAs
-import javax.ejb.Stateless
+import javax.ejb.{SessionContext, Stateless}
+import javax.annotation.Resource
 
 @Stateless
-@RunAs("solution-admin")
-class AdminRunner extends CommonAttributes {
+class UnauthenticatedRunner {
+    @Resource var ctx: SessionContext = _
 
-    def run[A](p: AdminRunner => A): A = {
-        p(this)
+    def run[A](p: SessionContext => A): A = {
+        p(ctx)
     }
 
     def run[A](p: => A): A = {

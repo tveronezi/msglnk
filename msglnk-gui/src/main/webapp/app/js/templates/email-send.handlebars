@@ -1,5 +1,4 @@
 <div class="container-narrow">
-
     <div class="masthead">
         <ul class="nav nav-pills pull-right">
             <li><a href="/">{{i18n "home"}}</a></li>
@@ -8,42 +7,47 @@
         </ul>
         <h3 class="muted">{{i18n "app.name"}}</h3>
     </div>
-
     <hr>
-
     <div>
-        <form>
-            <legend>{{i18n "send.an.email"}}</legend>
-            <fieldset>
-                <label>{{i18n "session"}}:</label>
-                <input name="session" class="input-block-level" type="text"
-                       placeholder='{{i18n "name.of.email.session"}}'>
-            </fieldset>
-            <fieldset>
-                <label>{{i18n "to"}}:</label>
-                <input name="to" class="input-block-level" type="text"
-                       placeholder='{{i18n "who.is.going.to.get.this.email"}}'>
-            </fieldset>
-            <fieldset>
-                <label>{{i18n "subject"}}:</label>
-                <input name="subject" class="input-block-level" type="text" placeholder='{{i18n "heads.up"}}'>
-            </fieldset>
-            <fieldset>
-                <label>{{i18n "content"}}:</label>
-                <textarea name="text" class="input-block-level" rows="5"></textarea>
-            </fieldset>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "session"}}:</label>
+
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id='{{current-id "msg-lnk"}}' name="session"
+                           placeholder='{{i18n "name.of.email.session"}}'>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "to"}}:</label>
+
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id='{{current-id "msg-lnk"}}' name="to"
+                           placeholder='{{i18n "who.is.going.to.get.this.email"}}'>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "subject"}}:</label>
+
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id='{{current-id "msg-lnk"}}' name="subject"
+                           placeholder='{{i18n "heads.up"}}'>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "content"}}:</label>
+
+                <div class="col-sm-10">
+                    <textarea id='{{current-id "msg-lnk"}}' name="text" class="form-control" rows="5">
+                    </textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href="send" class="btn send btn-large btn-success ux-send-btn">{{i18n "send"}}</a>
+                    <a href="save" class="btn btn-large ux-cancel-btn">{{i18n "cancel"}}</a>
+                </div>
+            </div>
         </form>
     </div>
-
-    <div class="jumbotron">
-        <button class="btn send btn-large btn-success ux-send-btn">{{i18n "send"}}</button>
-        <button class="btn send btn-large ux-cancel-btn">{{i18n "cancel"}}</button>
-    </div>
-
-    <hr>
-
-    <div class="footer">
-        <p>Apache TomEE <a href="http://tomee.apache.org/">http://tomee.apache.org/</a></p>
-    </div>
-
 </div>

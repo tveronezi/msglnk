@@ -11,13 +11,16 @@ var YUI_CONF = {
                 'ux-class': 'app/js/class.js',
                 'ux-app': {
                     requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console', 'ux-class',
-                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-keep-alive', 'ux-growl'
+                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-keep-alive', 'ux-growl', 'ux-sequence'
                     ],
                     path: 'app/js/app.js'
                 },
                 'ux-i18n': {
                     requires: ['ux-console', 'io-base', 'handlebars'],
                     path: 'app/js/i18n.js'
+                },
+                'ux-sequence': {
+                    path: 'app/js/sequence.js'
                 },
                 'ux-keep-alive': {
                     requires: ['ux-console', 'io-base'],
@@ -52,23 +55,18 @@ var YUI_CONF = {
             modules: {
                 // External lib
                 'ux-lib-less': {
-                    path: 'app/lib/less/less-1.3.0.min.js'
+                    path: 'app/lib/less/less.min.js'
                 },
                 'ux-lib-jquery': {
-                    fullpath: 'http://code.jquery.com/jquery-1.9.1.min.js'
+                    path: 'app/lib/jquery/jquery.min.js'
                 },
                 'ux-lib-bootstrap': {
-                    requires: ['ux-lib-jquery', 'ux-lib-bootstrap-css-responsive'],
-                    path: 'app/lib/bootstrap/2.1.1/js/bootstrap.js'
-                },
-                'ux-lib-bootstrap-css-responsive': {
-                    requires: ['ux-lib-bootstrap-css'],
-                    type: 'css',
-                    path: 'app/lib/bootstrap/2.1.1/css/bootstrap-responsive.css'
+                    requires: ['ux-lib-jquery', 'ux-lib-bootstrap-css'],
+                    path: 'app/lib/bootstrap/js/bootstrap.min.js'
                 },
                 'ux-lib-bootstrap-css': {
                     type: 'css',
-                    path: 'app/lib/bootstrap/2.1.1/css/bootstrap.css'
+                    path: 'app/lib/bootstrap/css/bootstrap.css'
                 }
             }
         }

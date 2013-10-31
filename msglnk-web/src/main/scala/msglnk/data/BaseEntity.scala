@@ -30,7 +30,7 @@ class BaseEntity {
     var uid: Long = _
 
     override def equals(that: Any): Boolean = {
-        that.isInstanceOf[BaseEntity] && (this.hashCode() == that.asInstanceOf[BaseEntity].hashCode())
+        that.isInstanceOf[BaseEntity] && this.hashCode() == that.asInstanceOf[BaseEntity].hashCode()
     }
 
     override def hashCode: Int = {

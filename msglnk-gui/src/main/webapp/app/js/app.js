@@ -103,7 +103,7 @@ YUI.add('ux-app', function (Y) {
 
     app.on('Home:ux-trigger-read-emails', function (evt) {
         Y.io(ROOT_URL + 'rest/email/trigger-read', {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -114,7 +114,7 @@ YUI.add('ux-app', function (Y) {
                 failure: function () {
                     Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.read.error'));
                 },
-                success: function (transactionid, response, args) {
+                success: function () {
                     Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.read.success'));
                 }
             }

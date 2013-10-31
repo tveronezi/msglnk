@@ -24,7 +24,8 @@ YUI.add('ux-view-home', function (Y) {
             '.ux-read-btn': {click: 'triggerRead'},
             '.ux-save-btn': {click: 'saveSession'}
         },
-        saveSession: function () {
+        saveSession: function (evt) {
+            evt.preventDefault();
             var sessionNameTxt = this.get('container').one('.ux-session-name');
             var configTxt = this.get('container').one('.ux-session-properties');
             this.fire('ux-save-email-session', {
@@ -33,7 +34,8 @@ YUI.add('ux-view-home', function (Y) {
             });
             this.render();
         },
-        triggerRead: function () {
+        triggerRead: function (evt) {
+            evt.preventDefault();
             this.fire('ux-trigger-read-emails', {});
         },
         render: function () {

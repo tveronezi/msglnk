@@ -24,7 +24,8 @@ YUI.add('ux-view-email-send', function (Y) {
             '.ux-send-btn': {click: 'submitForm'},
             '.ux-cancel-btn': {click: 'cancelSubmit'}
         },
-        submitForm: function () {
+        submitForm: function (evt) {
+            evt.preventDefault();
             var values = {};
             var container = this.get('container');
 
@@ -46,7 +47,8 @@ YUI.add('ux-view-email-send', function (Y) {
                 data: values
             });
         },
-        cancelSubmit: function () {
+        cancelSubmit: function (evt) {
+            evt.preventDefault();
             this.fire('ux-cancel-email', {});
         },
         render: function () {

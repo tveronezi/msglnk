@@ -16,20 +16,24 @@
  * limitations under the License.
  */
 
-package msglnk.runners
+package msglnk.tests
 
-import javax.annotation.security.RunAs
-import javax.ejb.Stateless
+import msglnk.runners.{UnauthenticatedRunner, AdminRunner}
+import org.junit.{Assert, Test}
+import javax.inject.Inject
+import msglnk.BaseTest
 
-@Stateless
-@RunAs("solution-admin")
-class AdminRunner extends CommonAttributes {
+class RoleTest extends BaseTest {
+    @Inject var adminRunner: AdminRunner = _
+    @Inject var unRunner: UnauthenticatedRunner = _
 
-    def run[A](p: AdminRunner => A): A = {
-        p(this)
-    }
-
-    def run[A](p: => A): A = {
-        p
+    @Test
+    def should_validate_role() {
+        unRunner.run((r: UnauthenticatedRunner) => {
+            Assert.assertFalse(r.ctx.isCallerInRole("solution-admin"))
+        })
+        adminRunner.run((r: AdminRunner) => {
+            Assert.assertTrue(r.ctx.isCallerInRole("solution-admin"))
+        })
     }
 }

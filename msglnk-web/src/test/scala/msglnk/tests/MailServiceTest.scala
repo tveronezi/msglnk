@@ -37,7 +37,6 @@ class MailServiceTest extends BaseTest {
 
     @Inject var adminRunner: AdminRunner = _
     @Inject var mailSessionService: MailSessionService = _
-    @Inject var auxiliary: AuxiliaryBean = _
 
     val sessionName = "MailServiceTest_SessionName"
     val url = getClass.getResource("/default-session.properties")
@@ -132,11 +131,11 @@ class MailServiceTest extends BaseTest {
         }
 
         val testContent = "is this working? %d".format(System.currentTimeMillis())
-        val connection = auxiliary.connectionFactory.createConnection()
+        val connection = adminRunner.connectionFactory.createConnection()
         connection.start()
         val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
-        val producer = session.createProducer(auxiliary.sendMessageQueue)
-        val consumer = session.createConsumer(auxiliary.newMessageQueue)
+        val producer = session.createProducer(adminRunner.sendMessageQueue)
+        val consumer = session.createConsumer(adminRunner.newMessageQueue)
 
         // send request to the queue
         val request = session.createMessage()

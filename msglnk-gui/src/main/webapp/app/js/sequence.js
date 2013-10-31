@@ -16,15 +16,41 @@
  *  limitations under the License.
  */
 
-package msglnk.tests
+YUI.add('ux-sequence', function (Y) {
+    'use strict';
 
-import javax.ejb.Stateless
-import javax.annotation.Resource
-import javax.jms.{Queue, ConnectionFactory}
+    var values = {};
 
-@Stateless
-class AuxiliaryBean {
-    @Resource var connectionFactory: ConnectionFactory = _
-    @Resource(name = "SendEmailQueue") var sendMessageQueue: Queue = _
-    @Resource(name = "IncomingEmailQueue") var newMessageQueue: Queue = _
-}
+    function current(key) {
+        var value = values[key];
+        if (!value && value !== 0) {
+            value = 0;
+            values[key] = value;
+        }
+        return value;
+    }
+
+    function next(key) {
+        var value = current(key);
+        value += 1;
+        values[key] = value;
+        return value;
+    }
+
+    function get(key, closure) {
+        return key + '-' + closure(key);
+    }
+
+    Y.namespace('ux.Sequence').current = current;
+
+    Y.namespace('ux.Sequence').next = next;
+
+    Y.Handlebars.registerHelper('current-id', function (key) {
+        return get(key, current);
+    });
+
+    Y.Handlebars.registerHelper('next-id', function (key) {
+        return get(key, next);
+    });
+
+});
