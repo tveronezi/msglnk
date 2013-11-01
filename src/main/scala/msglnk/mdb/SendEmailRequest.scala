@@ -36,6 +36,11 @@ class SendEmailRequest extends MessageListener {
         val to = message.getStringProperty("to")
         val subject = message.getStringProperty("subject")
         val text = message.getStringProperty("text")
-        mailSession.sendMail(sessionName, to, subject, text)
+        if(sessionName == null) {
+            mailSession.sendMail("default", to, subject, text)
+        } else {
+            mailSession.sendMail(sessionName, to, subject, text)
+        }
+
     }
 }

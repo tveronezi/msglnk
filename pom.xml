@@ -29,6 +29,23 @@
     <scala.version>2.9.2</scala.version>
     <scala.plugin.version>2.15.2</scala.plugin.version>
   </properties>
+  <profiles>
+    <profile>
+      <id>standalone</id>
+      <properties>
+        <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>solution</id>
+      <properties>
+        <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
+      </properties>
+    </profile>
+  </profiles>
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -151,11 +168,15 @@
         <artifactId>tomee-maven-plugin</artifactId>
         <version>${tomee.version}</version>
         <configuration>
-          <tomeeClassifier>plus</tomeeClassifier>
-          <args>-Xmx512m -XX:PermSize=256m</args>
           <context>msglnk</context>
-          <!--<debug>true</debug>-->
-          <!--<debugPort>8005</debugPort>-->
+          <config>${tomee.config.dir}</config>
+          <args>-Xmx512m -XX:PermSize=256m</args>
+          <tomeeClassifier>plus</tomeeClassifier>
+          <debugPort>5025</debugPort>
+          <tomeeAjpPort>8029</tomeeAjpPort>
+          <tomeeHttpPort>8082</tomeeHttpPort>
+          <tomeeShutdownPort>8025</tomeeShutdownPort>
+          <debug>false</debug>
         </configuration>
       </plugin>
     </plugins>
