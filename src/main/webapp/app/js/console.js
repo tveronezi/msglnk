@@ -19,12 +19,11 @@
 YUI.add('ux-console', function (Y) {
     'use strict';
 
-    var noOp = function () {
-    };
-    var fakeConsole = {
+    function noOp() {}
+
+    window.console = window.console || {
         log: noOp,
         error: noOp
     };
-    window.console = window.console || fakeConsole;
 
 });

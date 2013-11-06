@@ -29,9 +29,31 @@ class MailSession extends BaseEntity {
     @BeanProperty
     var name: String = _
 
+    @Column(name = "session_username", nullable = true)
+    @BeanProperty
+    var userName: String = _
+
+    @Column(name = "session_userpassword", nullable = true)
+    @BeanProperty
+    var userPassword: String = _
+
     @Column(nullable = false)
     @Lob
     @BeanProperty
     var config: String = _
+
+    @PrePersist
+    def prePersist() {
+        def getTrimmed(value: String): String = {
+            if(value == null) {
+                value
+            } else {
+                value.trim()
+            }
+        }
+        userName = getTrimmed(userName)
+        userPassword = getTrimmed(userPassword)
+        name = getTrimmed(name)
+    }
 
 }

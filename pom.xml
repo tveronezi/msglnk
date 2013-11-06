@@ -28,6 +28,7 @@
     <javaee.api>6.0-5</javaee.api>
     <scala.version>2.9.2</scala.version>
     <scala.plugin.version>2.15.2</scala.plugin.version>
+    <debug.it>false</debug.it>
   </properties>
   <profiles>
     <profile>
@@ -43,6 +44,12 @@
       <id>solution</id>
       <properties>
         <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>debug</id>
+      <properties>
+        <debug.it>true</debug.it>
       </properties>
     </profile>
   </profiles>
@@ -181,7 +188,7 @@
           <tomeeAjpPort>8029</tomeeAjpPort>
           <tomeeHttpPort>8082</tomeeHttpPort>
           <tomeeShutdownPort>8025</tomeeShutdownPort>
-          <debug>false</debug>
+          <debug>${debug.it}</debug>
         </configuration>
       </plugin>
     </plugins>
