@@ -30,7 +30,7 @@ YUI.add('ux-keep-alive', function (Y) {
             timeoutKey = null;
         }
         function timeoutCallback() {
-            Y.io(window.ROOT_URL + 'rest/keep-alive', {
+            Y.io(window.ux.ROOT_URL + 'rest/keep-alive', {
                 method: 'GET',
                 on: {
                     success: function () {

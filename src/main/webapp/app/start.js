@@ -16,8 +16,7 @@
  *  limitations under the License.
  */
 
-YUI(YUI_CONF).use(['ux-app'], function (Y) {
+YUI(window.ux.YUI_CONF).use(['ux-app'], function (Y) {
     'use strict';
     // This is just a bootstrap class. The real action is in "app.js"
-
 });

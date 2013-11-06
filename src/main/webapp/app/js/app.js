@@ -16,16 +16,13 @@
  *  limitations under the License.
  */
 
-if (window.document.location.href + '/' === window.document.location.origin + ROOT_URL) {
-    window.location = window.document.location.href + '/';
-}
 
 YUI.add('ux-app', function (Y) {
     'use strict';
 
     var app = new Y.App({
         serverRouting: true,
-        root: ROOT_URL,
+        root: window.ux.ROOT_URL,
         views: {
             'home': {
                 persist: false,
@@ -56,7 +53,7 @@ YUI.add('ux-app', function (Y) {
 
     app.on('EmailSend:ux-send-email', function (evt) {
         var data = evt.data;
-        Y.io(ROOT_URL + 'rest/email', {
+        Y.io(window.ux.ROOT_URL + 'rest/email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -82,7 +79,7 @@ YUI.add('ux-app', function (Y) {
     });
 
     app.on('Home:ux-save-email-session', function (evt) {
-        Y.io(ROOT_URL + 'rest/session', {
+        Y.io(window.ux.ROOT_URL + 'rest/session', {
             method: 'POST',
             data: {
                 config: evt.config,
@@ -102,7 +99,7 @@ YUI.add('ux-app', function (Y) {
     });
 
     app.on('Home:ux-trigger-read-emails', function (evt) {
-        Y.io(ROOT_URL + 'rest/email/trigger-read', {
+        Y.io(window.ux.ROOT_URL + 'rest/email/trigger-read', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

@@ -52,7 +52,7 @@ YUI.add('ux-templates', function (Y) {
 
     // Load all the files synchronous.
     Y.Array.forEach(files, function (file) {
-        Y.io(ROOT_URL + 'app/js/templates/' + file + '.handlebars', {
+        Y.io(window.ux.ROOT_URL + 'app/js/templates/' + file + '.handlebars', {
             sync: true,
             on: {
                 success: function (a, b, c, d, e) {
