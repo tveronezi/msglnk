@@ -106,8 +106,7 @@ class MailSessionService {
     def sendMail(sessionName: String, to: String, subject: String, text: String) {
         getMailSessionByName(sessionName) match {
             case Some(mailSession) => {
-                val sessionProperties = loadProperties(mailSession.getConfig)
-                val from = sessionProperties.getProperty(mailSession.getUserName)
+                val from = mailSession.getUserName
 
                 LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
                     sessionName, from, to, subject, text)
