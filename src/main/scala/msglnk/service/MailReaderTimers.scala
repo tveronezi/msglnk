@@ -42,11 +42,11 @@ class MailReaderTimers {
     var readMailHandles = Map[String, TimerHandle]()
 
     private def addReadMailHandle(sessionName: String, handle: TimerHandle) {
-        cancelAndRemoveHandle(sessionName)
+        cancelHandle(sessionName)
         readMailHandles = readMailHandles + (sessionName -> handle)
     }
 
-    private def cancelAndRemoveHandle(sessionName: String) {
+    def cancelHandle(sessionName: String) {
         readMailHandles.get(sessionName) match {
             case Some(handle) => {
                 try {
@@ -62,23 +62,41 @@ class MailReaderTimers {
         }
     }
 
+    def getNextTimeouts: Map[String, Long] = {
+        readMailHandles.mapValues(handle => {
+            try {
+                handle.getTimer.getNextTimeout.getTime
+            }
+            catch {
+                case e: Exception => -1l
+            }
+        })
+    }
+
     def scheduleSessionRead(sessionName: String, timeout: Int) {
+        if (sessionName == null || "".equals(sessionName.trim)) {
+            throw new InvalidParameterException("TimerConfig info should be the String 'sessionName'")
+        }
         val timer = timerService.createSingleActionTimer(timeout, new TimerConfig(sessionName, true))
         addReadMailHandle(sessionName, timer.getHandle)
     }
 
     @Timeout
     def readMail(timer: Timer) {
-        val sessionName: String = {
+        val sessionName = {
             timer.getInfo match {
                 case name: String => name
-                case _ => throw new InvalidParameterException("TimerConfig info should be the String 'sessionName'")
             }
         }
         try {
             readEvent.fire(new ReadMailEvent(sessionName))
-        } finally {
             scheduleSessionRead(sessionName, readIntervalValue)
+        }
+        catch {
+            case e: Exception => {
+                cancelHandle(sessionName)
+                readMailHandles -= sessionName // removing handle
+            }
         }
     }
 

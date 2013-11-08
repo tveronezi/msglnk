@@ -16,15 +16,21 @@
  * limitations under the License.
  */
 
-package msglnk.rest
+package msglnk.dto
 
-import javax.ws.rs.ApplicationPath
-import java.util
-import scala.collection.JavaConverters._
+import javax.xml.bind.annotation.{XmlElement, XmlAccessorType, XmlAccessType, XmlRootElement}
+import scala.reflect.BeanProperty
 
-@ApplicationPath("/rest")
-class ApplicationConfig extends javax.ws.rs.core.Application {
-    override def getClasses: util.Set[Class[_]] = {
-        Set[Class[_]](classOf[Mail], classOf[Session], classOf[SessionReader], classOf[KeepAlive]).asJava
-    }
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
+class NextSessionScheduledReadDto {
+
+    @XmlElement
+    @BeanProperty
+    var name: String = _
+
+    @XmlElement
+    @BeanProperty
+    var timestamp: Long = _
+
 }

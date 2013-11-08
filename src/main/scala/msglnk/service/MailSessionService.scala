@@ -58,6 +58,7 @@ class MailSessionService {
             readMail(evt.sessionName)
         }
         catch {
+            case e: MailSessionNotFound => throw e
             case e: Exception => LOG.error("Impossible to read email", e)
         }
     }
@@ -181,9 +182,7 @@ class MailSessionService {
                     }
                 }
             }
-            case None => {
-                LOG.warn("Impossible to read message from '{}'. Session not found.", sessionName)
-            }
+            case None => throw new MailSessionNotFound(sessionName)
         }
         number
     }

@@ -81,10 +81,7 @@ YUI.add('ux-app', function (Y) {
     app.on('Home:ux-save-email-session', function (evt) {
         Y.io(window.ux.ROOT_URL + 'rest/session', {
             method: 'POST',
-            data: {
-                config: evt.config,
-                name: evt.name
-            },
+            data: evt,
             on: {
                 failure: function () {
                     Y.ux.Growl.showNotification('error', Y.ux.Messages.get('save.session.error'));
