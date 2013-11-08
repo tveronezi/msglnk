@@ -26,13 +26,21 @@ YUI.add('ux-view-home', function (Y) {
         },
         saveSession: function (evt) {
             evt.preventDefault();
-            var sessionNameTxt = this.get('container').one('.ux-session-name');
-            var configTxt = this.get('container').one('.ux-session-properties');
-            this.fire('ux-save-email-session', {
-                config: configTxt.get('value'),
-                name: sessionNameTxt.get('value')
-            });
-            this.render();
+            var me = this;
+            var container = me.get('container');
+            var parameters = {};
+            var setValue = function (fieldCss, fieldName) {
+                var value = Y.Lang.trim(container.one(fieldCss).get('value'));
+                if ('' !== value || Y.Lang.isValue(value)) {
+                    parameters[fieldName] = value;
+                }
+            };
+            setValue('.ux-session-properties', 'config');
+            setValue('.ux-session-name', 'name');
+            setValue('.ux-user-name', 'user');
+            setValue('.ux-user-password', 'password');
+            me.fire('ux-save-email-session', parameters);
+            me.render();
         },
         triggerRead: function (evt) {
             evt.preventDefault();

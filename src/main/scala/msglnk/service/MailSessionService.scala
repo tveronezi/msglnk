@@ -7,30 +7,33 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package msglnk.service
 
-import javax.ejb.{EJB, Stateless}
+import javax.ejb._
 import javax.annotation.security.RolesAllowed
 import org.slf4j.{LoggerFactory, Logger}
 import javax.annotation.Resource
 import javax.jms._
 import msglnk.data.MailSession
-import msglnk.service.exception.MailSessionNotFound
+import msglnk.service.exception.{InvalidParameterException, MailSessionNotFound}
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties
 import java.io.StringReader
 import javax.mail.{Session, Message}
 import scala.Some
+import javax.inject.Inject
+import javax.enterprise.event.Observes
+import msglnk.events.ReadMailEvent
 
 @Stateless
 @RolesAllowed(Array("solution-admin"))
@@ -44,30 +47,44 @@ class MailSessionService {
     @Resource(name = "IncomingEmailQueue")
     var newEmailQueue: Queue = _
 
-    @EJB
+    @Inject
     var baseEAO: BaseEAO = _
 
-    def getMailSessionByName(name: String): Option[MailSession] = {
-        if (name == null) {
-            baseEAO.findUniqueBy(classOf[MailSession], "name", "default")
-        } else {
-            baseEAO.findUniqueBy(classOf[MailSession], "name", name)
+    @Inject
+    var timersHolder: MailReaderTimers = _
+
+    def listenToReadEvent(@Observes evt: ReadMailEvent) {
+        try {
+            readMail(evt.sessionName)
+        }
+        catch {
+            case e: Exception => LOG.error("Impossible to read email", e)
         }
     }
 
-    def saveSession(name: String, config: String): MailSession = {
-        val session = {
-            getMailSessionByName(name) match {
-                case Some(existing) => existing
-                case None => {
-                    val newSession = new MailSession
-                    newSession.setName(name)
-                    newSession
-                }
+    private def getMailSessionByName(name: String): Option[MailSession] = {
+        if (name == null) {
+            throw new InvalidParameterException("Sesssion name cannot be null")
+        }
+        baseEAO.findUniqueBy(classOf[MailSession], "name", name.trim())
+    }
+
+    def saveSession(name: String, userName: String, userPassword: String, config: String): MailSession = {
+        def setValues(session: MailSession) = {
+            session.setName(name)
+            session.setUserName(userName)
+            session.setUserPassword(userPassword)
+            session.setConfig(config)
+            baseEAO.create(session)
+        }
+        getMailSessionByName(name) match {
+            case Some(existing) => setValues(existing)
+            case None => {
+                val newSession = setValues(new MailSession)
+                timersHolder.scheduleSessionRead(name, 1000) // one second
+                newSession
             }
         }
-        session.setConfig(config)
-        baseEAO.create(session)
     }
 
     private def loadProperties(content: String) = {
@@ -78,11 +95,9 @@ class MailSessionService {
 
     private def getSession(mailSession: MailSession): Session = {
         val properties = loadProperties(mailSession.getConfig)
-        val user = properties.getProperty("ux_session_user_account")
-        val password = properties.getProperty("ux_session_user_password")
         Session.getInstance(properties, new Authenticator() {
             override def getPasswordAuthentication: PasswordAuthentication = {
-                new PasswordAuthentication(user, password)
+                new PasswordAuthentication(mailSession.getUserName, mailSession.getUserPassword)
             }
         })
     }
@@ -91,7 +106,7 @@ class MailSessionService {
         getMailSessionByName(sessionName) match {
             case Some(mailSession) => {
                 val sessionProperties = loadProperties(mailSession.getConfig)
-                val from = sessionProperties.getProperty("ux_session_user_account")
+                val from = sessionProperties.getProperty(mailSession.getUserName)
 
                 LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
                     sessionName, from, to, subject, text)
@@ -105,20 +120,6 @@ class MailSessionService {
             }
             case None => throw new MailSessionNotFound(sessionName)
         }
-    }
-
-    def readMailFromAllSessions(): Int = {
-        val sessions = baseEAO.findAll(classOf[MailSession])
-        var number = 0
-        for (session <- sessions) {
-            try {
-                number = number + readMail(session.getName)
-            }
-            catch {
-                case e: Exception => LOG.error("Impossible to read email", e)
-            }
-        }
-        number
     }
 
     private def readMail(sessionName: String): Int = {
@@ -229,7 +230,7 @@ class MailSessionService {
         }
     }
 
-    def notifyNewEmail(mailSession: MailSession, message: Message) {
+    private def notifyNewEmail(mailSession: MailSession, message: Message) {
         val from = message.getFrom()(0).asInstanceOf[InternetAddress].getAddress
         val recipients = message.getRecipients(Message.RecipientType.TO)
         val date = message.getSentDate
@@ -279,7 +280,6 @@ class MailSessionService {
                 connection.close()
             }
         }
-
-
     }
+
 }

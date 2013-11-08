@@ -16,30 +16,7 @@
  * limitations under the License.
  */
 
-package msglnk.rest
+package msglnk.events
 
-import javax.ws.rs._
-import org.slf4j.{Logger, LoggerFactory}
-import javax.ws.rs.core.Context
-import javax.servlet.http.HttpServletRequest
-
-@Path("/keep-alive")
-class KeepAlive {
-
-    val LOG: Logger = LoggerFactory.getLogger(classOf[KeepAlive])
-
-    @GET
-    def ping(@Context request: HttpServletRequest) {
-        val session = request.getSession
-        val principal = request.getUserPrincipal
-        val userName = {
-            if (principal == null) {
-                "guest"
-            } else {
-                principal.getName
-            }
-        }
-        LOG.info("'keepAlive' event triggered. sessionID: '{}' user: '{}'.", session.getId, userName, "")
-    }
-
+class ReadMailEvent(val sessionName: String) {
 }

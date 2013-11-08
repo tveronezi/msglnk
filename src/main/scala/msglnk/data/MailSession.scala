@@ -25,7 +25,7 @@ import javax.persistence._
 @Table(uniqueConstraints = Array(new UniqueConstraint(columnNames = Array("session_name"))))
 class MailSession extends BaseEntity {
 
-    @Column(name = "session_name")
+    @Column(name = "session_name", nullable = false)
     @BeanProperty
     var name: String = _
 
@@ -37,7 +37,7 @@ class MailSession extends BaseEntity {
     @BeanProperty
     var userPassword: String = _
 
-    @Column(nullable = false)
+    @Column(name = "session_config", nullable = false)
     @Lob
     @BeanProperty
     var config: String = _

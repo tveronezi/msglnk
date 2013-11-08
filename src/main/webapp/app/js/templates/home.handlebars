@@ -20,14 +20,23 @@
                            placeholder='{{i18n "name.of.email.session"}}'>
                 </div>
             </div>
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "user"}}:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control ux-user-name" id='{{current-id "msg-lnk"}}'>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "password"}}:</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control ux-user-password" id='{{current-id "msg-lnk"}}'>
+                </div>
+            </div>
 
             <div class="form-group">
                 <label for='{{next-id "msg-lnk"}}' class="col-sm-2 control-label">{{i18n "default.email.session.configuration"}}:</label>
                 <div class="col-sm-10">
                     <textarea id='{{current-id "msg-lnk"}}' class="form-control ux-session-properties" rows="12">
-ux_session_user_account=your user here
-ux_session_user_password=your password here
-ux_session_name=default
 mail.smtp.auth=true
 mail.smtp.starttls.enable=true
 mail.smtp.host=smtp.gmail.com

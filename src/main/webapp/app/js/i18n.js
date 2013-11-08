@@ -21,6 +21,8 @@ YUI.add('ux-i18n', function (Y) {
 
     var messages = {
         'app.name': 'MessageLink',
+        'user': 'User',
+        'password': 'Password',
         'home': 'Home',
         'page': 'Page',
         'send.email': 'Send email',

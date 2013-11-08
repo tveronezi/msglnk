@@ -16,22 +16,15 @@
  *  limitations under the License.
  */
 
-package msglnk
+package msglnk.rest
 
-import javax.annotation.security.RunAs
-import javax.ejb.Startup
-import javax.ejb.Singleton
-import javax.annotation.PostConstruct
-import org.slf4j.{LoggerFactory, Logger}
+import javax.ws.rs.ApplicationPath
+import java.util
+import scala.collection.JavaConverters._
 
-@Singleton(name = "MsglnkApplicationStart")
-@Startup
-@RunAs("solution-admin")
-class ApplicationStart {
-    val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationStart])
-
-    @PostConstruct def applicationStartup {
-        LOG.info("Starting MSGLNK...")
+@ApplicationPath("/rest")
+class ApplicationConfig extends javax.ws.rs.core.Application {
+    override def getClasses: util.Set[Class[_]] = {
+        Set[Class[_]](classOf[Mail], classOf[Session], classOf[KeepAlive]).asJava
     }
-
 }

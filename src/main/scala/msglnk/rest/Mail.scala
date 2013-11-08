@@ -42,11 +42,4 @@ class Mail {
         )
     }
 
-    @GET
-    @Path("/trigger-read")
-    def triggerRead() = {
-        def result = new NewEmailsDto
-        result.setNumber(mailService.readMailFromAllSessions())
-        result
-    }
 }

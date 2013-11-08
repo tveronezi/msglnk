@@ -16,22 +16,7 @@
  * limitations under the License.
  */
 
-package msglnk
+package msglnk.service.exception
 
-import javax.servlet.http.{HttpSession, HttpSessionEvent, HttpSessionListener}
-import org.slf4j.{LoggerFactory, Logger}
-
-class SessionListener extends HttpSessionListener {
-    val LOG: Logger = LoggerFactory.getLogger(classOf[SessionListener])
-
-    def sessionCreated(se: HttpSessionEvent) {
-        val session: HttpSession = se.getSession
-        LOG.info("PhotoDB sessionCreated -> Id: {} MaxInactiveInterval: {} seconds",
-            session.getId,
-            session.getMaxInactiveInterval)
-    }
-
-    def sessionDestroyed(se: HttpSessionEvent) {
-        LOG.info("PhotoDB sessionDestroyed -> Id: {}", se.getSession.getId)
-    }
+class InvalidParameterException(message: String) extends RuntimeException(message) {
 }
