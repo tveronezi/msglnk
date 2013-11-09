@@ -53,6 +53,13 @@ class BaseEAO {
         }
     }
 
+    def delete[T](cls: Class[T], id: Long) {
+        findById(cls, id) match {
+            case Some(bean) => em.remove(bean)
+            case None => // ignore
+        }
+    }
+
     def findUnique[T](cls: Class[T], query: Query): Option[T] = {
         try {
             Some(cls.cast(query.getSingleResult))

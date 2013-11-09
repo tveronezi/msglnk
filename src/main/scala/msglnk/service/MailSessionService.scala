@@ -53,6 +53,14 @@ class MailSessionService {
     @Inject
     var timersHolder: MailReaderTimers = _
 
+    def listSessions = {
+        baseEAO.findAll(classOf[MailSession])
+    }
+
+    def removeSession(id: Long) {
+        baseEAO.delete(classOf[MailSession], id)
+    }
+
     def listenToReadEvent(@Observes evt: ReadMailEvent) {
         try {
             readMail(evt.sessionName)

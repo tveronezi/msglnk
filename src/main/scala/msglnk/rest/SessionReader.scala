@@ -35,6 +35,7 @@ class SessionReader {
 
     @GET
     @Path("/timeouts")
+    @Produces(Array("application/json"))
     def getTimeouts = {
         val result = new mutable.MutableList[NextSessionScheduledReadDto]()
         service.getNextTimeouts.foreach {

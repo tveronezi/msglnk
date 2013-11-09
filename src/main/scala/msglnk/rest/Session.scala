@@ -19,9 +19,13 @@
 package msglnk.rest
 
 import javax.ejb.Stateless
-import javax.ws.rs.{POST, FormParam, Path, Produces}
+import javax.ws.rs._
 import javax.inject.Inject
-import msglnk.service.MailSessionService
+import msglnk.service.{MailReaderTimers, MailSessionService}
+import msglnk.dto.EmailSessionDto
+import scala.Some
+import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 @Path("/session")
 @Produces(Array("application/json"))
@@ -29,6 +33,35 @@ import msglnk.service.MailSessionService
 class Session {
 
     @Inject var mailService: MailSessionService = _
+
+    @Inject var timers: MailReaderTimers = _
+
+    @GET
+    @Produces(Array("application/json"))
+    def getSessions = {
+        var sessions = new ListBuffer[EmailSessionDto]
+        mailService.listSessions.foreach {
+            session => {
+                val dto = new EmailSessionDto()
+                dto.setId(session.getUid)
+                dto.setName(session.getName)
+                dto.setNextRead(timers.getNextTimeout(session.getName) match {
+                    case Some(timeout) => timeout
+                    case None => -1l
+                })
+                sessions += dto
+            }
+        }
+        sessions.asJava
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(Array("application/json"))
+    def deleteSession(@PathParam("id") id: Long) = {
+        mailService.removeSession(id)
+        true
+    }
 
     @POST
     def save(@FormParam("name") name: String,

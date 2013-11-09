@@ -46,6 +46,23 @@ class MailReaderTimers {
         readMailHandles = readMailHandles + (sessionName -> handle)
     }
 
+    @Lock(LockType.READ)
+    def getNextTimeout(sessionName: String): Option[Long] = {
+        readMailHandles.get(sessionName) match {
+            case Some(handle) => {
+                try {
+                    Option(handle.getTimer.getNextTimeout.getTime)
+                }
+                catch {
+                    case e: Exception => {
+                        None
+                    }
+                }
+            }
+            case None => None
+        }
+    }
+
     def cancelHandle(sessionName: String) {
         readMailHandles.get(sessionName) match {
             case Some(handle) => {
