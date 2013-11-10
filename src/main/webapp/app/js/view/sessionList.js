@@ -16,20 +16,32 @@
  *  limitations under the License.
  */
 
-YUI.add('ux-view-home', function (Y) {
+YUI.add('ux-view-session-list', function (Y) {
     'use strict';
 
-    Y.ux.Class.createClass('ux.view.Home', Y.View, {
+    Y.ux.Class.createClass('ux.view.SessionList', Y.View, {
+        events: {
+            '.ux-add-btn': {click: 'triggerAdd'}
+        },
+        triggerAdd: function (evt) {
+            evt.preventDefault();
+            this.fire('ux-trigger-session-add', {});
+        },
         render: function () {
-            this.get('container').setHTML(Y.ux.Templates.build('home'));
-            return this;
+            var me = this;
+            me.ux = me.ux || {};
+            if (!me.ux.isRendered) {
+                me.get('container').setHTML(Y.ux.Templates.build('session-list'));
+                me.ux.isRendered = true;
+            }
+            return me;
         }
     }, {
         ATTRS: {
             // Override the default container attribute.
             container: {
                 valueFn: function () {
-                    return Y.Node.create('<div class="ux-home"/>');
+                    return Y.Node.create('<div class="panel panel-default ux-session-list"/>');
                 }
             }
         }

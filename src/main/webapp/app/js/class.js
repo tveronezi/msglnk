@@ -19,11 +19,11 @@
 YUI.add('ux-class', function (Y) {
     'use strict';
 
-    function createClass(namespace, extendedClass, cfgBody) {
+    function createClass(namespace, extendedClass, cfgBody, staticBody) {
         var names = namespace.split('.');
         var className = names.pop();
 
-        Y.namespace(names.join('.'))[className] = Y.Base.create(className, extendedClass, [], cfgBody);
+        Y.namespace(names.join('.'))[className] = Y.Base.create(className, extendedClass, [], cfgBody, staticBody);
     }
 
     Y.namespace('ux').Class = {

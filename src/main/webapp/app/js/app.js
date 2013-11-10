@@ -20,100 +20,60 @@
 YUI.add('ux-app', function (Y) {
     'use strict';
 
+    var sessionsListView = new Y.ux.view.SessionList({});
+    var sessionsEditView = new Y.ux.view.SessionEdit({});
+
     var app = new Y.App({
         serverRouting: true,
         root: window.ux.ROOT_URL,
         views: {
             'home': {
-                persist: false,
                 type: 'ux.view.Home'
-            },
-            'email-send': {
-                persist: false,
-                type: 'ux.view.EmailSend'
-            },
-            about: {
-                persist: false,
-                type: 'ux.view.About'
             }
         }
     });
+    app.showView('home', {});
+
+    var showView = function (viewObj) {
+        var mainContainer = app.views.home.instance.get('container').one('.ux-content');
+        mainContainer.setHTML(viewObj.render().get('container'));
+    };
 
     app.route('/', function (req) {
-        app.showView('home', {});
+        showView(sessionsListView);
+    });
+    app.route('/session/add', function (req) {
+        showView(sessionsEditView);
     });
 
-    app.route('/about', function (req) {
-        app.showView('about', {});
-    });
-
-    app.route('/email-send', function (req) {
-        app.showView('email-send', {});
-    });
-
-    app.on('EmailSend:ux-send-email', function (evt) {
-        var data = evt.data;
-        Y.io(window.ux.ROOT_URL + 'rest/email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: Y.JSON.stringify({
-                emailDto: data
-            }),
-            on: {
-                failure: function (transactionid, response, args) {
-                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.send.error'));
-                    app.showView('email-send', {});
-                },
-                success: function (transactionid, response, args) {
-                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.send.success'));
-                    app.showView('email-send', {});
-                }
-            }
+    sessionsListView.on('ux-trigger-session-add', function () {
+        app.navigate('/session/add', {
+            force: false
         });
+        showView(sessionsEditView);
     });
 
-    app.on('EmailSend:ux-cancel-email', function (evt) {
-        app.showView('email-send', {});
-    });
-
-    app.on('Home:ux-save-email-session', function (evt) {
+    sessionsEditView.on('ux-save-email-session', function (evt) {
         Y.io(window.ux.ROOT_URL + 'rest/session', {
             method: 'POST',
             data: evt,
             on: {
                 failure: function () {
-                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('save.session.error'));
+                    Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error'));
                 },
                 success: function (transactionid, response, args) {
                     Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
                         name: evt.name
                     }));
+                    app.navigate('/', {
+                        force: false
+                    });
+                    showView(sessionsListView);
                 }
             }
         });
     });
 
-    app.on('Home:ux-trigger-read-emails', function (evt) {
-        Y.io(window.ux.ROOT_URL + 'rest/email/trigger-read', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            on: {
-                start: function () {
-                    Y.ux.Growl.showNotification('info', Y.ux.Messages.get('email.read.triggered'));
-                },
-                failure: function () {
-                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('email.read.error'));
-                },
-                success: function () {
-                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.read.success'));
-                }
-            }
-        });
-    });
 
     app.render().dispatch();
 });

@@ -23,6 +23,8 @@ YUI.add('ux-templates', function (Y) {
     var files = [
         'about',
         'home',
+        'session-list',
+        'session-edit',
         'email-send',
         'growl',
         'growl-container'

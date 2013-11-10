@@ -1,0 +1,37 @@
+<div class="panel-heading">
+    <h3 class="panel-title">{{i18n "session"}}</h3>
+</div>
+<div class="panel-body">
+    <form role="form">
+        <div class="form-group">
+            <label for='{{next-id "msg-lnk"}}'>{{i18n "session"}}:</label>
+            <input type="text" class="form-control ux-session-name" id='{{current-id "msg-lnk"}}' placeholder='{{i18n "name.of.email.session"}}'>
+        </div>
+        <div class="form-group">
+            <label for='{{next-id "msg-lnk"}}'>{{i18n "user"}}:</label>
+            <input type="text" class="form-control ux-user-name" id='{{current-id "msg-lnk"}}' placeholder='{{i18n "authenticator.data"}}'>
+        </div>
+        <div class="form-group">
+            <label for='{{next-id "msg-lnk"}}'>{{i18n "password"}}:</label>
+            <input type="password" class="form-control ux-user-password" id='{{current-id "msg-lnk"}}' placeholder='{{i18n "authenticator.data"}}'>
+        </div>
+        <div class="form-group">
+            <label for='{{next-id "msg-lnk"}}'>{{i18n "default.email.session.configuration"}}:</label>
+            <textarea id='{{current-id "msg-lnk"}}' class="form-control ux-session-properties" rows="12">
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.host=pop.gmail.com
+mail.store.protocol=pop3s
+mail.pop3s.auth=true
+mail.pop3s.port=995
+            </textarea>
+        </div>
+    </form>
+    <div class="ux-buttons">
+        <a href="session/save" class="btn btn-large btn-primary pull-right ux-save-btn">{{i18n "save.session.config"}}</a>
+    </div>
+</div>
+
+

@@ -21,6 +21,9 @@ YUI.add('ux-i18n', function (Y) {
 
     var messages = {
         'app.name': 'MessageLink',
+        'sessions': 'Sessions',
+        'sessions.new': 'New Session',
+        'session': 'Session',
         'user': 'User',
         'password': 'Password',
         'home': 'Home',
@@ -29,7 +32,7 @@ YUI.add('ux-i18n', function (Y) {
         'about': 'About',
         'send': 'Send',
         'cancel': 'Cancel',
-        'session': 'Session',
+
         'name.of.email.session': 'A friendly name for your email session',
         'authenticator.data': 'Information used by the javax.mail.Authenticator object',
         'send.an.email': 'Send an email',

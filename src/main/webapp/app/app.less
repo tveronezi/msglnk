@@ -16,39 +16,84 @@
  *  limitations under the License.
  */
 
-body {
-  padding-top: 20px;
-  padding-bottom: 40px;
+@defaultOffset: 5px;
 
-  .growl-container {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 5000;
+.growl-container {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 5000;
 
-    .growl {
-      opacity: 0;
-      width: 300px;
-    }
+  .growl {
+    opacity: 0;
+    width: 300px;
   }
 }
 
-/* Custom container */
-.container-narrow {
-  margin: 0 auto;
-  max-width: 700px;
+.ux-content {
+  position: absolute;
+  top: (@defaultOffset + 50px);
+  bottom: @defaultOffset;
+  right: @defaultOffset;
+  left: @defaultOffset;
 
-  hr {
-    margin: 30px 0;
-  }
+  .ux-session-edit {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
 
-  .jumbotron {
-    text-align: center;
+    .panel-body {
+      form {
+        position: absolute;
+        top: (@defaultOffset + 37px);
+        bottom: ((@defaultOffset * 2) + 34px);
+        left: @defaultOffset;
+        right: @defaultOffset;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+      }
 
-    .btn {
-      padding: 14px 24px;
-      font-size: 21px;
+      .ux-buttons {
+        position: absolute;
+        bottom: @defaultOffset;
+        left: @defaultOffset;
+        right: @defaultOffset;
+      }
     }
   }
 
+  .ux-session-list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+
+    .list-group {
+      position: absolute;
+      top: (@defaultOffset + 37px);
+      bottom: ((@defaultOffset * 2) + 34px);
+      left: @defaultOffset;
+      right: @defaultOffset;
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+    }
+
+    .ux-session-action {
+      color: black;
+    }
+
+    .ux-sessions-buttons {
+      position: absolute;
+      bottom: @defaultOffset;
+      left: @defaultOffset;
+      right: @defaultOffset;
+    }
+  }
 }

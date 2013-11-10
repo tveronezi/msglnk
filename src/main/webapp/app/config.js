@@ -16,7 +16,15 @@ window.ux.YUI_CONF = {
                 },
                 'ux-app': {
                     requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console', 'ux-class',
-                        'ux-view-about', 'ux-view-home', 'ux-view-email-send', 'ux-keep-alive', 'ux-growl', 'ux-sequence'
+
+                        'ux-view-about',
+                        'ux-view-home',
+                        'ux-view-session-list',
+                        'ux-view-session-edit',
+                        'ux-view-email-send',
+                        'ux-keep-alive',
+                        'ux-growl',
+                        'ux-sequence'
                     ],
                     path: '../../../app/js/app.js'
                 },
@@ -45,6 +53,16 @@ window.ux.YUI_CONF = {
                     requires: ['base', 'ux-templates'],
                     path: '../../../app/js/view/home.js'
                 },
+                'ux-view-session-list': {
+                    requires: ['base', 'ux-templates'],
+                    path: '../../../app/js/view/sessionList.js'
+                },
+                'ux-view-session-edit': {
+                    requires: ['base', 'ux-templates'],
+                    path: '../../../app/js/view/sessionEdit.js'
+                },
+
+
                 'ux-view-email-send': {
                     requires: ['base', 'ux-templates'],
                     path: '../../../app/js/view/email-send.js'
