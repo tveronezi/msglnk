@@ -20,6 +20,7 @@
 YUI.add('ux-app', function (Y) {
     'use strict';
 
+    var sessionsList = new Y.ux.model.MailSessions({});
     var sessionsListView = new Y.ux.view.SessionList({});
     var sessionsEditView = new Y.ux.view.SessionEdit({});
 
@@ -39,10 +40,10 @@ YUI.add('ux-app', function (Y) {
         mainContainer.setHTML(viewObj.render().get('container'));
     };
 
-    app.route('/', function (req) {
+    app.route('/', function () {
         showView(sessionsListView);
     });
-    app.route('/session/add', function (req) {
+    app.route('/session/add', function () {
         showView(sessionsEditView);
     });
 
@@ -61,7 +62,7 @@ YUI.add('ux-app', function (Y) {
                 failure: function () {
                     Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error'));
                 },
-                success: function (transactionid, response, args) {
+                success: function () {
                     Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
                         name: evt.name
                     }));

@@ -28,6 +28,7 @@
     <javaee.api>6.0-5</javaee.api>
     <scala.version>2.9.2</scala.version>
     <scala.plugin.version>2.15.2</scala.plugin.version>
+    <jslint.version>2.0.5</jslint.version>
     <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
     <debug.it>false</debug.it>
   </properties>
@@ -146,7 +147,7 @@
       <plugin>
         <groupId>com.googlecode.jslint4java</groupId>
         <artifactId>jslint4java-maven-plugin</artifactId>
-        <version>2.0.3</version>
+        <version>${jslint.version}</version>
         <configuration>
           <failOnError>true</failOnError>
           <options>

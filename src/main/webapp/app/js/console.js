@@ -16,10 +16,12 @@
  *  limitations under the License.
  */
 
-YUI.add('ux-console', function (Y) {
+YUI.add('ux-console', function () {
     'use strict';
 
-    function noOp() {}
+    function noOp() {
+        return undefined;
+    }
 
     window.console = window.console || {
         log: noOp,

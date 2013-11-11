@@ -54,11 +54,12 @@ YUI.add('ux-templates', function (Y) {
 
     // Load all the files synchronous.
     Y.Array.forEach(files, function (file) {
+        /*jslint unparam: true*/
         Y.io(window.ux.ROOT_URL + 'app/js/templates/' + file + '.handlebars', {
             sync: true,
             on: {
-                success: function (a, b, c, d, e) {
-                    templates[file] = Y.Handlebars.compile(b.responseText);
+                success: function (ignoreMe, resp) {
+                    templates[file] = Y.Handlebars.compile(resp.responseText);
                 },
                 failure: function () {
                     window.console.error('Impossible to load template file', file);

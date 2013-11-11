@@ -15,7 +15,10 @@ window.ux.YUI_CONF = {
                     path: '../../../app/js/class.js'
                 },
                 'ux-app': {
-                    requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console', 'ux-class',
+                    requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console',
+
+                        'ux-class',
+                        'ux-model',
 
                         'ux-view-about',
                         'ux-view-home',
@@ -27,6 +30,10 @@ window.ux.YUI_CONF = {
                         'ux-sequence'
                     ],
                     path: '../../../app/js/app.js'
+                },
+                'ux-model': {
+                    requires: ['app', 'model', 'model-list'],
+                    path: '../../../app/js/model.js'
                 },
                 'ux-i18n': {
                     requires: ['ux-console', 'io-base', 'handlebars'],
