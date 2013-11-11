@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-YUI.add('ux-model', function (Y) {
+YUI.add('ux-model-session', function (Y) {
     'use strict';
 
     /*jslint stupid: true */ // Needed otherwise lint thinks "ModelSync" is a node.js "sync" method.

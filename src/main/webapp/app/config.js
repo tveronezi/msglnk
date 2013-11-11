@@ -18,7 +18,8 @@ window.ux.YUI_CONF = {
                     requires: ['app', 'json-parse', 'ux-lib-less', 'ux-lib-jquery', 'ux-lib-bootstrap', 'ux-console',
 
                         'ux-class',
-                        'ux-model',
+                        'ux-model-session',
+                        'ux-model-mail',
 
                         'ux-view-about',
                         'ux-view-home',
@@ -31,9 +32,13 @@ window.ux.YUI_CONF = {
                     ],
                     path: '../../../app/js/app.js'
                 },
-                'ux-model': {
+                'ux-model-session': {
                     requires: ['app', 'model', 'model-list', 'json-parse'],
-                    path: '../../../app/js/model.js'
+                    path: '../../../app/js/model/session.js'
+                },
+                'ux-model-mail': {
+                    requires: ['app', 'model'],
+                    path: '../../../app/js/model/mail.js'
                 },
                 'ux-i18n': {
                     requires: ['ux-console', 'io-base', 'handlebars'],

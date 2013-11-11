@@ -26,6 +26,7 @@ YUI.add('ux-view-email-send', function (Y) {
         },
         submitForm: function (evt) {
             evt.preventDefault();
+            var me = this;
             var values = {};
             var container = this.get('container');
 
@@ -33,17 +34,17 @@ YUI.add('ux-view-email-send', function (Y) {
                 btn.setAttribute('disabled', true);
             });
 
-            function getValues() {
+            var getValues = function () {
                 Y.each(arguments, function (selector) {
                     container.all(selector).each(function (txt) {
-                        txt.setAttribute('disabled', true);
                         values[txt.get('name')] = txt.get('value');
                     });
                 });
-            }
+            };
 
             getValues('input', 'textarea');
-            this.fire('ux-send-email', {
+            values.sessionId = me.get('model').get('id');
+            me.fire('ux-send-email', {
                 data: values
             });
         },
@@ -52,8 +53,20 @@ YUI.add('ux-view-email-send', function (Y) {
             this.fire('ux-cancel-email', {});
         },
         render: function () {
-            this.get('container').setHTML(Y.ux.Templates.build('email-send'));
-            return this;
+            var me = this;
+            me.get('container').setHTML(Y.ux.Templates.build('email-send', {
+                sessionName: me.get('model').get('name')
+            }));
+            return me;
+        }
+    }, {
+        ATTRS: {
+            // Override the default container attribute.
+            container: {
+                valueFn: function () {
+                    return Y.Node.create('<div class="panel panel-default ux-session-send"/>');
+                }
+            }
         }
     });
 

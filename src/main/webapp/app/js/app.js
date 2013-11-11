@@ -46,6 +46,52 @@ YUI.add('ux-app', function (Y) {
         sessionsList.load();
     };
 
+
+    var showSendView = function (id) {
+        var goBackToList = function () {
+            app.navigate('/', {
+                force: false
+            });
+            showListView();
+        };
+        var showIt = function (model) {
+            var view = new Y.ux.view.EmailSend({
+                model: model
+            });
+            view.on('ux-send-email', function (evt) {
+                var model = new Y.ux.model.Mail(evt.data);
+                model.save({}, function (err) {
+                    if (err) {
+                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('email.send.error', {}));
+                    } else {
+                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.send.success', {}));
+                    }
+                });
+            });
+            view.on('ux-cancel-email', function () {
+                goBackToList();
+                view.destroy(true);
+            });
+            showView(view);
+        };
+        if (Y.Lang.isValue(id)) {
+            (function () {
+                var model = new Y.ux.model.MailSession({
+                    id: id
+                });
+                model.load(function (err) {
+                    if (err) {
+                        goBackToList();
+                    } else {
+                        showIt(model);
+                    }
+                });
+            }());
+        } else {
+            goBackToList();
+        }
+    };
+
     var showEditView = function (id) {
         var showIt = function (model) {
             var sessionsEditView = new Y.ux.view.SessionEdit({
@@ -87,6 +133,12 @@ YUI.add('ux-app', function (Y) {
                     }
                 });
             });
+            sessionsEditView.on('ux-send-email', function (evt) {
+                app.navigate('/session/send/' + evt.id, {
+                    force: false
+                });
+                showSendView(evt.id);
+            });
             showView(sessionsEditView);
         };
         if (id !== null && id !== undefined) {
@@ -118,6 +170,9 @@ YUI.add('ux-app', function (Y) {
     });
     app.route('/session/view/:id', function (req) {
         showEditView(req.params.id);
+    });
+    app.route('/session/send/:id', function (req) {
+        showSendView(req.params.id);
     });
 
     sessionsListView.on('ux-trigger-session-add', function () {

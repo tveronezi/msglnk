@@ -20,16 +20,13 @@ YUI.add('ux-i18n', function (Y) {
     'use strict';
 
     var messages = {
-        'app.name': 'MessageLink',
+        'app.name': 'MsgLnk',
         'sessions': 'Sessions',
         'sessions.new': 'New Session',
         'session': 'Session',
         'user': 'User',
         'password': 'Password',
-        'home': 'Home',
-        'page': 'Page',
         'send.email': 'Send email',
-        'about': 'About',
         'send': 'Send',
         'cancel': 'Cancel',
         'delete.session.config': 'Delete',
@@ -38,10 +35,11 @@ YUI.add('ux-i18n', function (Y) {
         'delete.session.success': 'Session "{{name}}" saved successfully',
         'save.session.error': 'Impossible to save the session "{{name}}". Checkout your log messages.',
         'delete.session.error': 'Impossible to delete the session "{{name}}". Checkout your log messages.',
+        'email.send.error': 'Impossible to send your message". Checkout your log messages.',
+        'email.send.success': 'Email sent successfully.',
 
         'name.of.email.session': 'A friendly name for your email session',
         'authenticator.data': 'Information used by the javax.mail.Authenticator object',
-        'send.an.email': 'Send an email',
         'to': 'To',
         'who.is.going.to.get.this.email': 'Who is going to get this email?',
         'subject': 'Subject',
@@ -50,11 +48,6 @@ YUI.add('ux-i18n', function (Y) {
         'trigger.email.read': 'Read emails from remote server',
         'default.email.session.configuration': 'Configuration',
 
-        'email.read.triggered': 'Reading emails...',
-        'email.read.error': 'Impossible to read the emails. Checkout your log messages.',
-        'email.read.success': 'Done reading emails',
-        'email.send.success': 'Email sent successfully',
-        'email.send.error': 'Impossible to send the email. Checkout your log messages.',
         'dummy': 'dummy'
     };
 

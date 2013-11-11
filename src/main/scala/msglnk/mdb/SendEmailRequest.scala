@@ -33,11 +33,15 @@ class SendEmailRequest extends MessageListener {
     @EJB var mailSession: MailSessionService = _
 
     def onMessage(message: Message) {
-        val sessionName = message.getStringProperty("sessionName")
-        val to = message.getStringProperty("to")
-        val subject = message.getStringProperty("subject")
-        val text = message.getStringProperty("text")
-        mailSession.sendMail(sessionName, to, subject, text)
+        mailSession.getMailSessionByName(message.getStringProperty("sessionName")) match {
+            case Some(session) => {
+                val to = message.getStringProperty("to")
+                val subject = message.getStringProperty("subject")
+                val text = message.getStringProperty("text")
+                mailSession.sendMail(session.getUid, to, subject, text)
+            }
+            case None => // ignore
+        }
     }
 
 }

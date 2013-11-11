@@ -24,7 +24,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import javax.annotation.Resource
 import javax.jms._
 import msglnk.data.MailSession
-import msglnk.exception.{InvalidParameterException, MailSessionNotFound}
+import msglnk.exception.{MailSessionIdNotFound, InvalidParameterException, MailSessionNotFound}
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties
@@ -79,13 +79,6 @@ class MailSessionService {
         }
     }
 
-    private def getMailSessionByName(name: String): Option[MailSession] = {
-        if (name == null) {
-            throw new InvalidParameterException("Sesssion name cannot be null")
-        }
-        baseEAO.findUniqueBy(classOf[MailSession], "name", name.trim())
-    }
-
     def saveSession(id: Long, name: String, userName: String, userPassword: String, config: String): MailSession = {
         def setValues(session: MailSession) = {
             session.setName(name)
@@ -119,13 +112,13 @@ class MailSessionService {
         })
     }
 
-    def sendMail(sessionName: String, to: String, subject: String, text: String) {
-        getMailSessionByName(sessionName) match {
+    def sendMail(sessionId: Long, to: String, subject: String, text: String) {
+        findSession(sessionId) match {
             case Some(mailSession) => {
                 val from = mailSession.getUserName
 
                 LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
-                    sessionName, from, to, subject, text)
+                    mailSession.getName, from, to, subject, text)
 
                 val message = new MimeMessage(getSession(mailSession))
                 message.setFrom(new InternetAddress(from))
@@ -134,8 +127,15 @@ class MailSessionService {
                 message.setText(text)
                 Transport.send(message)
             }
-            case None => throw new MailSessionNotFound(sessionName)
+            case None => throw new MailSessionIdNotFound(sessionId)
         }
+    }
+
+    def getMailSessionByName(name: String): Option[MailSession] = {
+        if (name == null) {
+            throw new InvalidParameterException("Sesssion name cannot be null")
+        }
+        baseEAO.findUniqueBy(classOf[MailSession], "name", name.trim())
     }
 
     private def readMail(sessionName: String): Int = {
