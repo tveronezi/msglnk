@@ -21,7 +21,10 @@ YUI.add('ux-app', function (Y) {
     'use strict';
 
     var sessionsList = new Y.ux.model.MailSessions({});
-    var sessionsListView = new Y.ux.view.SessionList({});
+
+    var sessionsListView = new Y.ux.view.SessionList({
+        modelList: sessionsList
+    });
     var sessionsEditView = new Y.ux.view.SessionEdit({});
 
     var app = new Y.App({
@@ -40,8 +43,13 @@ YUI.add('ux-app', function (Y) {
         mainContainer.setHTML(viewObj.render().get('container'));
     };
 
-    app.route('/', function () {
+    var showListView = function() {
         showView(sessionsListView);
+        sessionsList.load();
+    };
+
+    app.route('/', function () {
+        showListView();
     });
     app.route('/session/add', function () {
         showView(sessionsEditView);
@@ -69,12 +77,11 @@ YUI.add('ux-app', function (Y) {
                     app.navigate('/', {
                         force: false
                     });
-                    showView(sessionsListView);
+                    showListView();
                 }
             }
         });
     });
-
 
     app.render().dispatch();
 });

@@ -29,12 +29,25 @@ YUI.add('ux-view-session-list', function (Y) {
         },
         render: function () {
             var me = this;
-            me.ux = me.ux || {};
-            if (!me.ux.isRendered) {
-                me.get('container').setHTML(Y.ux.Templates.build('session-list'));
-                me.ux.isRendered = true;
-            }
+            var container = me.get('container');
+            container.setHTML(Y.ux.Templates.build('session-list'));
+            var list = container.one('.list-group');
+            var modelList = me.get('modelList');
+            modelList.each(function (model) {
+                var content = Y.ux.Templates.build('session-list-entry', {
+                    id: model.get('id'),
+                    name: model.get('name')
+                });
+                var modelNode = Y.Node.create(content);
+                list.append(modelNode);
+            });
             return me;
+        },
+        initializer: function () {
+            var me = this;
+            var list = me.get('modelList');
+            list.after('load', me.render, me);
+            list.after('*:change', me.render, me);
         }
     }, {
         ATTRS: {

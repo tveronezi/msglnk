@@ -24,6 +24,7 @@ YUI.add('ux-templates', function (Y) {
         'about',
         'home',
         'session-list',
+        'session-list-entry',
         'session-edit',
         'email-send',
         'growl',

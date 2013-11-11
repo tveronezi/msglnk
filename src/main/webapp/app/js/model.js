@@ -16,22 +16,24 @@
  *  limitations under the License.
  */
 
-YUI.add('ux-class', function (Y) {
+YUI.add('ux-model', function (Y) {
     'use strict';
 
-    function createClass(namespace, extendedClass, cfgBody, staticBody, extensions) {
-        var names = namespace.split('.');
-        var className = names.pop();
-        var exts = extensions;
-        if (!exts) {
-            exts = [];
-        }
-        var newClass = Y.Base.create(className, extendedClass, exts, cfgBody, staticBody);
-        Y.namespace(names.join('.'))[className] = newClass;
-        return newClass;
-    }
+    /*jslint stupid: true */ // Needed otherwise lint thinks "ModelSync" is a node.js "sync" method.
 
-    Y.namespace('ux').Class = {
-        createClass: createClass
+    var parse = function (response) {
+        var json = Y.JSON.parse(response);
+        return json.emailSessionDto;
     };
+
+    Y.ux.Class.createClass('ux.model.MailSession', Y.Model, {
+        root: window.ux.ROOT_URL + 'rest/session',
+        parse: parse
+    }, {}, [Y.ModelSync.REST]);
+
+    Y.ux.Class.createClass('ux.model.MailSessions', Y.ModelList, {
+        model: Y.ux.model.MailSession,
+        parse: parse
+    }, {}, [Y.ModelSync.REST]);
+
 });
