@@ -21,7 +21,16 @@ YUI.add('ux-view-session-edit', function (Y) {
 
     Y.ux.Class.createClass('ux.view.SessionEdit', Y.View, {
         events: {
-            '.ux-save-btn': {click: 'saveSession'}
+            '.ux-save-btn': {click: 'saveSession'},
+            '.ux-delete-btn': {click: 'deleteSession'}
+        },
+        deleteSession: function (evt) {
+            evt.preventDefault();
+            var me = this;
+            var model = me.get('model');
+            me.fire('ux-delete-email-session', {
+                model: model
+            });
         },
         saveSession: function (evt) {
             evt.preventDefault();

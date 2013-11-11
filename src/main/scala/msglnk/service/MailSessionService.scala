@@ -62,6 +62,10 @@ class MailSessionService {
     }
 
     def removeSession(id: Long) {
+        findSession(id) match {
+            case Some(session) => timersHolder.cancelHandle(session.getName)
+            case None => // ignore
+        }
         baseEAO.delete(classOf[MailSession], id)
     }
 

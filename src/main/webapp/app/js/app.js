@@ -66,6 +66,18 @@ YUI.add('ux-app', function (Y) {
                     }
                 });
             });
+            sessionsEditView.on('ux-delete-email-session', function (evt) {
+                evt.model.destroy({
+                    remove: true
+                }, function (err) {
+                    if (err) {
+                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('delete.session.error'));
+                    } else {
+                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('delete.session.success', {}));
+                        showListView();
+                    }
+                });
+            });
             showView(sessionsEditView);
         };
         if (id !== null && id !== undefined) {

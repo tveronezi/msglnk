@@ -32,6 +32,8 @@ YUI.add('ux-i18n', function (Y) {
         'about': 'About',
         'send': 'Send',
         'cancel': 'Cancel',
+        'delete.session.config': 'Delete',
+        'save.session.config': 'Save',
 
         'name.of.email.session': 'A friendly name for your email session',
         'authenticator.data': 'Information used by the javax.mail.Authenticator object',
@@ -43,7 +45,7 @@ YUI.add('ux-i18n', function (Y) {
         'content': 'Content',
         'trigger.email.read': 'Read emails from remote server',
         'default.email.session.configuration': 'Configuration',
-        'save.session.config': 'Save session configuration',
+
         'email.read.triggered': 'Reading emails...',
         'email.read.error': 'Impossible to read the emails. Checkout your log messages.',
         'email.read.success': 'Done reading emails',
