@@ -45,11 +45,15 @@ class BaseEAO {
     }
 
     def findById[T, E](cls: Class[T], value: E): Option[T] = {
-        val obj = em.find(cls, value)
-        if (obj == null) {
+        if(value == null) {
             None
         } else {
-            Some(cls.cast(obj))
+            val obj = em.find(cls, value)
+            if (obj == null) {
+                None
+            } else {
+                Some(cls.cast(obj))
+            }
         }
     }
 

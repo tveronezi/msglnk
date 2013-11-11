@@ -36,6 +36,18 @@ class EmailSessionDto {
 
     @XmlElement
     @BeanProperty
+    var userName: String = _
+
+    @XmlElement
+    @BeanProperty
+    var userPassword: String = _
+
+    @XmlElement
+    @BeanProperty
+    var config: String = _
+
+    @XmlElement
+    @BeanProperty
     var nextRead: Long = _
 
 }

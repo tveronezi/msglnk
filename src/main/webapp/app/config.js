@@ -1,7 +1,7 @@
 window.ux = window.ux || {};
 window.ux.YUI_CONF = {
     // Uncomment it to get the debug version of YUI
-    // filter: 'debug',
+    filter: 'debug',
 
     base: window.ux.ROOT_URL + 'webjars/yui/3.11.0/',
 

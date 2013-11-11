@@ -26,6 +26,8 @@ import msglnk.dto.EmailSessionDto
 import scala.Some
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
+import msglnk.service.exception.MailSessionIdNotFound
+import msglnk.data.MailSession
 
 @Path("/session")
 @Produces(Array("application/json"))
@@ -36,24 +38,55 @@ class Session {
 
     @Inject var timers: MailReaderTimers = _
 
+    private def buildSessionDto(session: MailSession) = {
+        val dto = new EmailSessionDto()
+        dto.setId(session.getUid)
+        dto.setName(session.getName)
+        dto.setUserName(session.getUserName)
+        dto.setUserPassword(session.getUserPassword)
+        dto.setConfig(session.getConfig)
+        dto.setNextRead(timers.getNextTimeout(session.getName) match {
+            case Some(timeout) => timeout
+            case None => -1l
+        })
+        dto
+    }
+
     @GET
     @Produces(Array("application/json"))
     def getSessions = {
         var sessions = new ListBuffer[EmailSessionDto]
         mailService.listSessions.foreach {
-            session => {
-                val dto = new EmailSessionDto()
-                dto.setId(session.getUid)
-                dto.setName(session.getName)
-                dto.setNextRead(timers.getNextTimeout(session.getName) match {
-                    case Some(timeout) => timeout
-                    case None => -1l
-                })
-                sessions += dto
-            }
+            session => sessions += buildSessionDto(session)
         }
         sessions.asJava
     }
+
+    @GET
+    @Path("/{id}")
+    @Produces(Array("application/json"))
+    def getSession(@PathParam("id") id: Long): EmailSessionDto = {
+        mailService.findSession(id) match {
+            case Some(session) => buildSessionDto(session)
+            case None => throw new MailSessionIdNotFound(id)
+        }
+    }
+
+    private def saveSession(dto: EmailSessionDto): EmailSessionDto = {
+        def bean = mailService.saveSession(dto.getId, dto.getName, dto.getUserName, dto.getUserPassword, dto.getConfig)
+        buildSessionDto(bean)
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(Array("application/json"))
+    @Produces(Array("application/json"))
+    def putSession(dto: EmailSessionDto) = saveSession(dto)
+
+    @POST
+    @Consumes(Array("application/json"))
+    @Produces(Array("application/json"))
+    def save(dto: EmailSessionDto) = saveSession(dto)
 
     @DELETE
     @Path("/{id}")
@@ -62,13 +95,4 @@ class Session {
         mailService.removeSession(id)
         true
     }
-
-    @POST
-    def save(@FormParam("name") name: String,
-             @FormParam("user") user: String,
-             @FormParam("password") password: String,
-             @FormParam("config") config: String) {
-        mailService.saveSession(name, user, password, config)
-    }
-
 }

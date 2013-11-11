@@ -21,11 +21,9 @@ YUI.add('ux-app', function (Y) {
     'use strict';
 
     var sessionsList = new Y.ux.model.MailSessions({});
-
     var sessionsListView = new Y.ux.view.SessionList({
         modelList: sessionsList
     });
-    var sessionsEditView = new Y.ux.view.SessionEdit({});
 
     var app = new Y.App({
         serverRouting: true,
@@ -43,44 +41,69 @@ YUI.add('ux-app', function (Y) {
         mainContainer.setHTML(viewObj.render().get('container'));
     };
 
-    var showListView = function() {
+    var showListView = function () {
         showView(sessionsListView);
         sessionsList.load();
+    };
+
+    var showEditView = function (id) {
+        var showIt = function (model) {
+            var sessionsEditView = new Y.ux.view.SessionEdit({
+                model: model
+            });
+            sessionsEditView.on('ux-save-email-session', function (evt) {
+                evt.model.save({}, function (err) {
+                    if (err) {
+                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error'));
+                    } else {
+                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
+                            name: evt.name
+                        }));
+                        app.navigate('/', {
+                            force: false
+                        });
+                        showListView();
+                    }
+                });
+            });
+            showView(sessionsEditView);
+        };
+        if (id !== null && id !== undefined) {
+            (function () {
+                var model = new Y.ux.model.MailSession({
+                    id: id
+                });
+                model.load(function (err) {
+                    if (err) {
+                        app.navigate('/', {
+                            force: false
+                        });
+                        showListView();
+                    } else {
+                        showIt(model);
+                    }
+                });
+            }());
+        } else {
+            showIt(new Y.ux.model.MailSession({}));
+        }
     };
 
     app.route('/', function () {
         showListView();
     });
     app.route('/session/add', function () {
-        showView(sessionsEditView);
+        showEditView(null);
+    });
+    app.route('/session/view/:id', function (req) {
+        showEditView(req.params.id);
     });
 
     sessionsListView.on('ux-trigger-session-add', function () {
         app.navigate('/session/add', {
             force: false
         });
-        showView(sessionsEditView);
-    });
-
-    sessionsEditView.on('ux-save-email-session', function (evt) {
-        Y.io(window.ux.ROOT_URL + 'rest/session', {
-            method: 'POST',
-            data: evt,
-            on: {
-                failure: function () {
-                    Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error'));
-                },
-                success: function () {
-                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
-                        name: evt.name
-                    }));
-                    app.navigate('/', {
-                        force: false
-                    });
-                    showListView();
-                }
-            }
-        });
+        showEditView(null);
     });
 
     app.render().dispatch();

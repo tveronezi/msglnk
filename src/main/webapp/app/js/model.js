@@ -26,9 +26,23 @@ YUI.add('ux-model', function (Y) {
         return json.emailSessionDto;
     };
 
+    var toJSON = function () {
+        var attrs = this.getAttrs();
+        delete attrs.clientId;
+        delete attrs.destroyed;
+        delete attrs.initialized;
+        if (this.idAttribute !== 'id') {
+            delete attrs.id;
+        }
+        return {
+            emailSessionDto: attrs
+        };
+    };
+
     Y.ux.Class.createClass('ux.model.MailSession', Y.Model, {
         root: window.ux.ROOT_URL + 'rest/session',
-        parse: parse
+        parse: parse,
+        toJSON: toJSON
     }, {}, [Y.ModelSync.REST]);
 
     Y.ux.Class.createClass('ux.model.MailSessions', Y.ModelList, {

@@ -57,6 +57,10 @@ class MailSessionService {
         baseEAO.findAll(classOf[MailSession])
     }
 
+    def findSession(id: Long) = {
+        baseEAO.findById(classOf[MailSession], id)
+    }
+
     def removeSession(id: Long) {
         baseEAO.delete(classOf[MailSession], id)
     }
@@ -78,7 +82,7 @@ class MailSessionService {
         baseEAO.findUniqueBy(classOf[MailSession], "name", name.trim())
     }
 
-    def saveSession(name: String, userName: String, userPassword: String, config: String): MailSession = {
+    def saveSession(id: Long, name: String, userName: String, userPassword: String, config: String): MailSession = {
         def setValues(session: MailSession) = {
             session.setName(name)
             session.setUserName(userName)
@@ -86,7 +90,7 @@ class MailSessionService {
             session.setConfig(config)
             baseEAO.create(session)
         }
-        getMailSessionByName(name) match {
+        findSession(id) match {
             case Some(existing) => setValues(existing)
             case None => {
                 val newSession = setValues(new MailSession)

@@ -26,23 +26,37 @@ YUI.add('ux-view-session-edit', function (Y) {
         saveSession: function (evt) {
             evt.preventDefault();
             var me = this;
+            var model = me.get('model');
             var container = me.get('container');
-            var parameters = {};
             var setValue = function (fieldCss, fieldName) {
                 var value = Y.Lang.trim(container.one(fieldCss).get('value'));
                 if ('' !== value || Y.Lang.isValue(value)) {
-                    parameters[fieldName] = value;
+                    model.set(fieldName, value);
+                }
+            };
+            setValue('.ux-session-name', 'name');
+            setValue('.ux-user-name', 'userName');
+            setValue('.ux-user-password', 'userPassword');
+            setValue('.ux-session-properties', 'config');
+            me.fire('ux-save-email-session', {
+                model: model
+            });
+        },
+        render: function () {
+            var me = this;
+            var model = me.get('model');
+            var container = me.get('container');
+            me.get('container').setHTML(Y.ux.Templates.build('session-edit'));
+            var setValue = function (fieldCss, fieldName) {
+                var value = model.get(fieldName);
+                if (value !== null && value !== undefined) {
+                    container.one(fieldCss).set('value', value);
                 }
             };
             setValue('.ux-session-properties', 'config');
             setValue('.ux-session-name', 'name');
-            setValue('.ux-user-name', 'user');
-            setValue('.ux-user-password', 'password');
-            me.fire('ux-save-email-session', parameters);
-        },
-        render: function () {
-            var me = this;
-            me.get('container').setHTML(Y.ux.Templates.build('session-edit'));
+            setValue('.ux-user-name', 'userName');
+            setValue('.ux-user-password', 'userPassword');
             return me;
         }
     }, {
