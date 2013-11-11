@@ -20,6 +20,7 @@ package msglnk.data
 
 import scala.reflect.BeanProperty
 import javax.persistence._
+import msglnk.exception.InvalidParameterException
 
 @Entity
 @Table(uniqueConstraints = Array(new UniqueConstraint(columnNames = Array("session_name"))))
@@ -44,16 +45,22 @@ class MailSession extends BaseEntity {
 
     @PrePersist
     def prePersist() {
-        def getTrimmed(value: String): String = {
-            if(value == null) {
-                value
+        def getException(fieldName: String) = {
+            new InvalidParameterException("The field %s cannot be empty or null".format(fieldName))
+        }
+        def trimAndValidate(fieldName: String, value: String): String = {
+            if (value == null) {
+                throw getException(fieldName)
             } else {
-                value.trim()
+                value.trim() match {
+                    case "" => throw getException(fieldName)
+                    case s => s
+                }
             }
         }
-        userName = getTrimmed(userName)
-        userPassword = getTrimmed(userPassword)
-        name = getTrimmed(name)
+        userName = trimAndValidate("userName", userName)
+        userPassword = trimAndValidate("userPassword", userPassword)
+        name = trimAndValidate("name", name)
     }
 
 }

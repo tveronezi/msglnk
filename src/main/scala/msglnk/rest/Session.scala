@@ -26,7 +26,7 @@ import msglnk.dto.EmailSessionDto
 import scala.Some
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
-import msglnk.service.exception.MailSessionIdNotFound
+import msglnk.exception.MailSessionIdNotFound
 import msglnk.data.MailSession
 
 @Path("/session")

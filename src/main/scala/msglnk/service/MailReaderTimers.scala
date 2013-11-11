@@ -24,7 +24,7 @@ import javax.enterprise.event.Event
 import msglnk.events.ReadMailEvent
 import javax.annotation.Resource
 import scala.Some
-import msglnk.service.exception.InvalidParameterException
+import msglnk.exception.InvalidParameterException
 import javax.annotation.security.RunAs
 
 @Singleton

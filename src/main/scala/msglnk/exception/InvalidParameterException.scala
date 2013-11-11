@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package msglnk.service.exception
+package msglnk.exception
 
 class InvalidParameterException(message: String) extends RuntimeException(message) {
 }

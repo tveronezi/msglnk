@@ -29,7 +29,8 @@ YUI.add('ux-view-session-edit', function (Y) {
             var me = this;
             var model = me.get('model');
             me.fire('ux-delete-email-session', {
-                model: model
+                model: model,
+                name: model.get('name')
             });
         },
         saveSession: function (evt) {
@@ -48,7 +49,8 @@ YUI.add('ux-view-session-edit', function (Y) {
             setValue('.ux-user-password', 'userPassword');
             setValue('.ux-session-properties', 'config');
             me.fire('ux-save-email-session', {
-                model: model
+                model: model,
+                name: model.get('name')
             });
         },
         render: function () {
@@ -66,6 +68,9 @@ YUI.add('ux-view-session-edit', function (Y) {
             setValue('.ux-session-name', 'name');
             setValue('.ux-user-name', 'userName');
             setValue('.ux-user-password', 'userPassword');
+            if (!Y.Lang.isValue(model.get('id'))) {
+                container.one('.ux-delete-btn').remove(true);
+            }
             return me;
         }
     }, {

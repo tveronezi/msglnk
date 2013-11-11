@@ -16,8 +16,8 @@
  *  limitations under the License.
  */
 
-package msglnk.service.exception
+package msglnk.exception
 
-class MailSessionIdNotFound(id: Long) extends RuntimeException("Session '%d' not found".format(id)) {
+class MailSessionNotFound(sessionName: String) extends RuntimeException("Session '%s' not found".format(sessionName)) {
 
 }

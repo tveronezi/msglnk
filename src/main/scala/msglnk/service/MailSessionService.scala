@@ -24,7 +24,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import javax.annotation.Resource
 import javax.jms._
 import msglnk.data.MailSession
-import msglnk.service.exception.{InvalidParameterException, MailSessionNotFound}
+import msglnk.exception.{InvalidParameterException, MailSessionNotFound}
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties

@@ -54,7 +54,9 @@ YUI.add('ux-app', function (Y) {
             sessionsEditView.on('ux-save-email-session', function (evt) {
                 evt.model.save({}, function (err) {
                     if (err) {
-                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error'));
+                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('save.session.error', {
+                            name: evt.name
+                        }));
                     } else {
                         Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
                             name: evt.name
@@ -71,9 +73,16 @@ YUI.add('ux-app', function (Y) {
                     remove: true
                 }, function (err) {
                     if (err) {
-                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('delete.session.error'));
+                        Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('delete.session.error', {
+                            name: evt.name
+                        }));
                     } else {
-                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('delete.session.success', {}));
+                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('delete.session.success', {
+                            name: evt.name
+                        }));
+                        app.navigate('/', {
+                            force: false
+                        });
                         showListView();
                     }
                 });

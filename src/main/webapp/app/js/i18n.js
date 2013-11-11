@@ -34,6 +34,10 @@ YUI.add('ux-i18n', function (Y) {
         'cancel': 'Cancel',
         'delete.session.config': 'Delete',
         'save.session.config': 'Save',
+        'save.session.success': 'Session "{{name}}" saved successfully',
+        'delete.session.success': 'Session "{{name}}" saved successfully',
+        'save.session.error': 'Impossible to save the session "{{name}}". Checkout your log messages.',
+        'delete.session.error': 'Impossible to delete the session "{{name}}". Checkout your log messages.',
 
         'name.of.email.session': 'A friendly name for your email session',
         'authenticator.data': 'Information used by the javax.mail.Authenticator object',
@@ -49,8 +53,6 @@ YUI.add('ux-i18n', function (Y) {
         'email.read.triggered': 'Reading emails...',
         'email.read.error': 'Impossible to read the emails. Checkout your log messages.',
         'email.read.success': 'Done reading emails',
-        'save.session.error': 'Impossible to save the session configuration. Checkout your log messages.',
-        'save.session.success': 'Session "{{name}}" saved successfully',
         'email.send.success': 'Email sent successfully',
         'email.send.error': 'Impossible to send the email. Checkout your log messages.',
         'dummy': 'dummy'
