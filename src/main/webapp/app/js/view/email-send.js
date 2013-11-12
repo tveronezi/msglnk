@@ -29,11 +29,6 @@ YUI.add('ux-view-email-send', function (Y) {
             var me = this;
             var values = {};
             var container = this.get('container');
-
-            container.all('button').each(function (btn) {
-                btn.setAttribute('disabled', true);
-            });
-
             var getValues = function () {
                 Y.each(arguments, function (selector) {
                     container.all(selector).each(function (txt) {
@@ -41,7 +36,6 @@ YUI.add('ux-view-email-send', function (Y) {
                     });
                 });
             };
-
             getValues('input', 'textarea');
             values.sessionId = me.get('model').get('id');
             me.fire('ux-send-email', {

@@ -18,5 +18,5 @@
 
 package msglnk.events
 
-class ReadMailEvent(val sessionName: String) {
+class ReadMailEvent(val sessionId: Long) {
 }

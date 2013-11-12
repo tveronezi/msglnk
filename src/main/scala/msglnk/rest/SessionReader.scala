@@ -21,40 +21,28 @@ package msglnk.rest
 import javax.ejb.Stateless
 import javax.ws.rs._
 import javax.inject.Inject
-import msglnk.service.MailReaderTimers
-import msglnk.dto.NextSessionScheduledReadDto
-import scala.collection.mutable
-import scala.collection.JavaConverters._
+import msglnk.service.{MailSessionService, MailReaderTimers}
 
 @Path("/session-reader")
 @Produces(Array("application/json"))
 @Stateless
 class SessionReader {
 
-    @Inject var service: MailReaderTimers = _
-
-    @GET
-    @Path("/timeouts")
-    @Produces(Array("application/json"))
-    def getTimeouts = {
-        val result = new mutable.MutableList[NextSessionScheduledReadDto]()
-        service.getNextTimeouts.foreach {
-            case (name, timestamp) => {
-                val dto = new NextSessionScheduledReadDto()
-                dto.setName(name)
-                dto.setTimestamp(timestamp)
-                result += dto
-            }
-        }
-        result.asJava
-    }
+    @Inject var emailSrv: MailSessionService = _
+    @Inject var timerSrv: MailReaderTimers = _
 
     @GET
     @POST
     @Path("/read/{sessionName}")
-    def readSession(@PathParam("sessionName") sessionName: String) {
-        val result = new mutable.MutableList[NextSessionScheduledReadDto]()
-        service.scheduleSessionRead(sessionName, 1000) // one second
+    @Produces(Array("application/json"))
+    def readSession(@PathParam("sessionName") sessionName: String) = {
+        emailSrv.getMailSessionByName(sessionName) match {
+            case Some(session) => {
+                timerSrv.scheduleSessionRead(session.getUid, 500) // 1/2 second
+                true
+            }
+            case None => false
+        }
     }
 
 }

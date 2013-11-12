@@ -45,7 +45,7 @@ class Session {
         dto.setUserName(session.getUserName)
         dto.setUserPassword(session.getUserPassword)
         dto.setConfig(session.getConfig)
-        dto.setNextRead(timers.getNextTimeout(session.getName) match {
+        dto.setNextRead(timers.getNextTimeout(session.getUid) match {
             case Some(timeout) => timeout
             case None => -1l
         })

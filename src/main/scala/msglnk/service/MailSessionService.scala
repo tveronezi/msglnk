@@ -24,7 +24,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import javax.annotation.Resource
 import javax.jms._
 import msglnk.data.MailSession
-import msglnk.exception.{MailSessionIdNotFound, InvalidParameterException, MailSessionNotFound}
+import msglnk.exception.{InvalidParameterException, MailSessionIdNotFound}
 import javax.mail.internet.{InternetAddress, MimeMessage}
 import javax.mail._
 import java.util.Properties
@@ -63,7 +63,7 @@ class MailSessionService {
 
     def removeSession(id: Long) {
         findSession(id) match {
-            case Some(session) => timersHolder.cancelHandle(session.getName)
+            case Some(session) => timersHolder.cancelHandle(session.getUid)
             case None => // ignore
         }
         baseEAO.delete(classOf[MailSession], id)
@@ -71,10 +71,10 @@ class MailSessionService {
 
     def listenToReadEvent(@Observes evt: ReadMailEvent) {
         try {
-            readMail(evt.sessionName)
+            readMail(evt.sessionId)
         }
         catch {
-            case e: MailSessionNotFound => throw e
+            case e: MailSessionIdNotFound => throw e
             case e: Exception => LOG.error("Impossible to read email", e)
         }
     }
@@ -91,7 +91,7 @@ class MailSessionService {
             case Some(existing) => setValues(existing)
             case None => {
                 val newSession = setValues(new MailSession)
-                timersHolder.scheduleSessionRead(name, 1000) // one second
+                timersHolder.scheduleSessionRead(newSession.getUid, 1000) // one second
                 newSession
             }
         }
@@ -126,6 +126,8 @@ class MailSessionService {
                 message.setSubject(subject)
                 message.setText(text)
                 Transport.send(message)
+
+                LOG.info("... Done sending email.")
             }
             case None => throw new MailSessionIdNotFound(sessionId)
         }
@@ -133,14 +135,14 @@ class MailSessionService {
 
     def getMailSessionByName(name: String): Option[MailSession] = {
         if (name == null) {
-            throw new InvalidParameterException("Sesssion name cannot be null")
+            throw new InvalidParameterException("Session name cannot be null")
         }
         baseEAO.findUniqueBy(classOf[MailSession], "name", name.trim())
     }
 
-    private def readMail(sessionName: String): Int = {
+    private def readMail(sessionId: Long): Int = {
         var number = 0
-        getMailSessionByName(sessionName) match {
+        findSession(sessionId) match {
             case Some(mailSession) => {
                 LOG.info("Reading emails from session '{}'", mailSession.getName)
                 val session = getSession(mailSession)
@@ -197,7 +199,7 @@ class MailSessionService {
                     }
                 }
             }
-            case None => throw new MailSessionNotFound(sessionName)
+            case None => throw new MailSessionIdNotFound(sessionId)
         }
         number
     }

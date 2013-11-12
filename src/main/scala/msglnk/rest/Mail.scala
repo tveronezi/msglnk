@@ -20,7 +20,7 @@ package msglnk.rest
 
 import javax.ejb.Stateless
 import javax.ws.rs._
-import msglnk.dto.{NewEmailsDto, EmailDto}
+import msglnk.dto.EmailDto
 import msglnk.service.MailSessionService
 import javax.inject.Inject
 
@@ -33,13 +33,15 @@ class Mail {
 
     @POST
     @Consumes(Array("application/json"))
-    def send(mailDto: EmailDto) {
+    @Produces(Array("application/json"))
+    def send(mailDto: EmailDto) = {
         mailService.sendMail(
             mailDto.getSessionId,
             mailDto.getTo,
             mailDto.getSubject,
             mailDto.getText
         )
+        mailDto
     }
 
 }

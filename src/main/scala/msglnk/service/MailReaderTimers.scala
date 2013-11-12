@@ -39,16 +39,16 @@ class MailReaderTimers {
     @Resource
     var timerService: TimerService = _
 
-    var readMailHandles = Map[String, TimerHandle]()
+    var readMailHandles = Map[Long, TimerHandle]()
 
-    private def addReadMailHandle(sessionName: String, handle: TimerHandle) {
-        cancelHandle(sessionName)
-        readMailHandles = readMailHandles + (sessionName -> handle)
+    private def addReadMailHandle(sessionId: Long, handle: TimerHandle) {
+        cancelHandle(sessionId)
+        readMailHandles = readMailHandles + (sessionId -> handle)
     }
 
     @Lock(LockType.READ)
-    def getNextTimeout(sessionName: String): Option[Long] = {
-        readMailHandles.get(sessionName) match {
+    def getNextTimeout(sessionId: Long): Option[Long] = {
+        readMailHandles.get(sessionId) match {
             case Some(handle) => {
                 try {
                     Option(handle.getTimer.getNextTimeout.getTime)
@@ -63,8 +63,8 @@ class MailReaderTimers {
         }
     }
 
-    def cancelHandle(sessionName: String) {
-        readMailHandles.get(sessionName) match {
+    def cancelHandle(sessionId: Long) {
+        readMailHandles.get(sessionId) match {
             case Some(handle) => {
                 try {
                     handle.getTimer.cancel()
@@ -79,40 +79,29 @@ class MailReaderTimers {
         }
     }
 
-    def getNextTimeouts: Map[String, Long] = {
-        readMailHandles.mapValues(handle => {
-            try {
-                handle.getTimer.getNextTimeout.getTime
-            }
-            catch {
-                case e: Exception => -1l
-            }
-        })
-    }
-
-    def scheduleSessionRead(sessionName: String, timeout: Int) {
-        if (sessionName == null || "".equals(sessionName.trim)) {
-            throw new InvalidParameterException("TimerConfig info should be the String 'sessionName'")
+    def scheduleSessionRead(sessionId: Long, timeout: Int) {
+        if (sessionId == null) {
+            throw new InvalidParameterException("TimerConfig info should be the 'session UID'")
         }
-        val timer = timerService.createSingleActionTimer(timeout, new TimerConfig(sessionName, true))
-        addReadMailHandle(sessionName, timer.getHandle)
+        val timer = timerService.createSingleActionTimer(timeout, new TimerConfig(sessionId.toString, true))
+        addReadMailHandle(sessionId, timer.getHandle)
     }
 
     @Timeout
     def readMail(timer: Timer) {
-        val sessionName = {
+        val sessionId = {
             timer.getInfo match {
-                case name: String => name
+                case id: String => id.toLong
             }
         }
         try {
-            readEvent.fire(new ReadMailEvent(sessionName))
-            scheduleSessionRead(sessionName, readIntervalValue)
+            readEvent.fire(new ReadMailEvent(sessionId))
+            scheduleSessionRead(sessionId, readIntervalValue)
         }
         catch {
             case e: Exception => {
-                cancelHandle(sessionName)
-                readMailHandles -= sessionName // removing handle
+                cancelHandle(sessionId)
+                readMailHandles -= sessionId // removing handle
             }
         }
     }
