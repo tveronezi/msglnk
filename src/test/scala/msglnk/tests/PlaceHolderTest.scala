@@ -18,22 +18,15 @@
 
 package msglnk.tests
 
-import msglnk.runners.{UnauthenticatedRunner, AdminRunner}
-import org.junit.{Assert, Test}
-import javax.inject.Inject
+import org.junit.Assert
+import org.junit.Test
 import msglnk.BaseTest
 
-class RoleTest extends BaseTest {
-    @Inject var adminRunner: AdminRunner = _
-    @Inject var unRunner: UnauthenticatedRunner = _
+class PlaceHolderTest extends BaseTest {
 
     @Test
-    def should_validate_role() {
-        unRunner.run((r: UnauthenticatedRunner) => {
-            Assert.assertFalse(r.ctx.isCallerInRole("solution-admin"))
-        })
-        adminRunner.run((r: AdminRunner) => {
-            Assert.assertTrue(r.ctx.isCallerInRole("solution-admin"))
-        })
+    def place_holder() {
+        Assert.assertTrue(true)
     }
+
 }
