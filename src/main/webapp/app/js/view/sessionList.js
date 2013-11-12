@@ -21,7 +21,8 @@ YUI.add('ux-view-session-list', function (Y) {
 
     Y.ux.Class.createClass('ux.view.SessionList', Y.View, {
         events: {
-            '.ux-add-btn': {click: 'triggerAdd'}
+            '.ux-add-btn': {click: 'triggerAdd'},
+            '.ux-trigger-read': {click: 'triggerRead'}
         },
         triggerAdd: function (evt) {
             evt.preventDefault();

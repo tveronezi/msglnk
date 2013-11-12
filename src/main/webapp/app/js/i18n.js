@@ -31,10 +31,12 @@ YUI.add('ux-i18n', function (Y) {
         'cancel': 'Cancel',
         'delete.session.config': 'Delete',
         'save.session.config': 'Save',
-        'save.session.success': 'Session "{{name}}" saved successfully',
-        'delete.session.success': 'Session "{{name}}" saved successfully',
+        'save.session.success': 'Session "{{name}}" saved successfully.',
+        'delete.session.success': 'Session "{{name}}" saved successfully.',
         'save.session.error': 'Impossible to save the session "{{name}}". Checkout your log messages.',
         'delete.session.error': 'Impossible to delete the session "{{name}}". Checkout your log messages.',
+        'read.session.success': 'Emails read successfully.',
+        'read.session.error': 'Impossible to read emails from this session. Checkout your log messages.',
         'email.send.error': 'Impossible to send your message". Checkout your log messages.',
         'email.send.success': 'Email sent successfully.',
 
@@ -45,7 +47,6 @@ YUI.add('ux-i18n', function (Y) {
         'subject': 'Subject',
         'heads.up': 'Heads up?',
         'content': 'Content',
-        'trigger.email.read': 'Read emails from remote server',
         'default.email.session.configuration': 'Configuration',
 
         'dummy': 'dummy'

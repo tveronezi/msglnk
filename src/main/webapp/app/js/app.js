@@ -49,10 +49,7 @@ YUI.add('ux-app', function (Y) {
 
     var showSendView = function (id) {
         var goBackToList = function () {
-            app.navigate('/', {
-                force: false
-            });
-            showListView();
+            app.navigate('/');
         };
         var showIt = function (model) {
             var view = new Y.ux.view.EmailSend({
@@ -107,10 +104,7 @@ YUI.add('ux-app', function (Y) {
                         Y.ux.Growl.showNotification('success', Y.ux.Messages.get('save.session.success', {
                             name: evt.name
                         }));
-                        app.navigate('/', {
-                            force: false
-                        });
-                        showListView();
+                        app.navigate('/');
                     }
                 });
             });
@@ -126,10 +120,7 @@ YUI.add('ux-app', function (Y) {
                         Y.ux.Growl.showNotification('success', Y.ux.Messages.get('delete.session.success', {
                             name: evt.name
                         }));
-                        app.navigate('/', {
-                            force: false
-                        });
-                        showListView();
+                        app.navigate('/');
                     }
                 });
             });
@@ -150,10 +141,7 @@ YUI.add('ux-app', function (Y) {
                 });
                 model.load(function (err) {
                     if (err) {
-                        app.navigate('/', {
-                            force: false
-                        });
-                        showListView();
+                        app.navigate('/');
                     } else {
                         showIt(model);
                     }
@@ -176,10 +164,27 @@ YUI.add('ux-app', function (Y) {
     app.route('/session/send/:id', function (req) {
         showSendView(req.params.id);
     });
+    app.route('/session/read/:id', function (req) {
+        Y.io(window.ux.ROOT_URL + 'rest/session-reader/read/' + req.params.id, {
+            method: 'GET',
+            data: {},
+            on: {
+                failure: function () {
+                    Y.ux.Growl.showNotification('error', Y.ux.Messages.get('read.session.error'));
+                },
+                success: function () {
+                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('read.session.success'));
+                }
+            }
+        });
+        app.navigate('/');
+    });
+
 
     sessionsListView.on('ux-trigger-session-add', function () {
         app.navigate('/session/add');
     });
+
 
     app.render().dispatch();
 });

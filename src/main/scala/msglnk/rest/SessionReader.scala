@@ -33,12 +33,12 @@ class SessionReader {
 
     @GET
     @POST
-    @Path("/read/{sessionName}")
+    @Path("/read/{id}")
     @Produces(Array("application/json"))
-    def readSession(@PathParam("sessionName") sessionName: String) = {
-        emailSrv.getMailSessionByName(sessionName) match {
+    def readSession(@PathParam("id") id: Long) = {
+        emailSrv.findSession(id) match {
             case Some(session) => {
-                timerSrv.scheduleSessionRead(session.getUid, 500) // 1/2 second
+                timerSrv.scheduleSessionRead(id, 500) // 1/2 second
                 true
             }
             case None => false
