@@ -69,7 +69,7 @@ YUI.add('ux-app', function (Y) {
                 });
             });
             view.on('ux-cancel-email', function () {
-                goBackToList();
+                app.navigate('/session/view/' + id);
                 view.destroy(true);
             });
             showView(view);
@@ -133,11 +133,13 @@ YUI.add('ux-app', function (Y) {
                     }
                 });
             });
+
+
+            sessionsEditView.on('ux-cancel-edit', function () {
+                app.navigate('/');
+            });
             sessionsEditView.on('ux-send-email', function (evt) {
-                app.navigate('/session/send/' + evt.id, {
-                    force: false
-                });
-                showSendView(evt.id);
+                app.navigate('/session/send/' + evt.id);
             });
             showView(sessionsEditView);
         };
@@ -176,10 +178,7 @@ YUI.add('ux-app', function (Y) {
     });
 
     sessionsListView.on('ux-trigger-session-add', function () {
-        app.navigate('/session/add', {
-            force: false
-        });
-        showEditView(null);
+        app.navigate('/session/add');
     });
 
     app.render().dispatch();

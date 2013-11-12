@@ -23,7 +23,12 @@ YUI.add('ux-view-session-edit', function (Y) {
         events: {
             '.ux-save-btn': {click: 'saveSession'},
             '.ux-delete-btn': {click: 'deleteSession'},
+            '.ux-cancel-btn': {click: 'cancelEdit'},
             '.ux-send-btn': {click: 'sendMail'}
+        },
+        cancelEdit: function(evt) {
+            evt.preventDefault();
+            this.fire('ux-cancel-edit', {});
         },
         sendMail: function(evt) {
             evt.preventDefault();
@@ -79,6 +84,7 @@ YUI.add('ux-view-session-edit', function (Y) {
             setValue('.ux-user-password', 'userPassword');
             if (!Y.Lang.isValue(model.get('id'))) {
                 container.one('.ux-delete-btn').remove(true);
+                container.one('.ux-send-btn').remove(true);
             }
             return me;
         }

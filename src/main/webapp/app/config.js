@@ -77,7 +77,7 @@ window.ux.YUI_CONF = {
 
                 'ux-view-email-send': {
                     requires: ['base', 'ux-templates'],
-                    path: '../../../app/js/view/email-send.js'
+                    path: '../../../app/js/view/emailSend.js'
                 },
                 'ux-growl': {
                     requires: ['base', 'ux-templates', 'anim'],
