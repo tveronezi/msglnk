@@ -22,6 +22,7 @@ import javax.ws.rs._
 import org.slf4j.{Logger, LoggerFactory}
 import javax.ws.rs.core.Context
 import javax.servlet.http.HttpServletRequest
+import java.security.Principal
 
 @Path("/keep-alive")
 class KeepAlive {
@@ -31,13 +32,9 @@ class KeepAlive {
     @GET
     def ping(@Context request: HttpServletRequest) {
         val session = request.getSession
-        val principal = request.getUserPrincipal
-        val userName = {
-            if (principal == null) {
-                "guest"
-            } else {
-                principal.getName
-            }
+        val userName = request.getUserPrincipal match {
+            case principal: Principal => principal.getName
+            case null => "guest"
         }
         LOG.info("'keepAlive' event triggered. sessionID: '{}' user: '{}'.", session.getId, userName, "")
     }

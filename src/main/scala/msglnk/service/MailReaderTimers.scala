@@ -80,11 +80,13 @@ class MailReaderTimers {
     }
 
     def scheduleSessionRead(sessionId: Long, timeout: Int) {
-        if (sessionId == null) {
-            throw new InvalidParameterException("TimerConfig info should be the 'session UID'")
+        sessionId match {
+            case id: Long => {
+                val timer = timerService.createSingleActionTimer(timeout, new TimerConfig(id.toString, true))
+                addReadMailHandle(sessionId, timer.getHandle)
+            }
+            case _ =>  throw new InvalidParameterException("TimerConfig info should be the 'session UID'")
         }
-        val timer = timerService.createSingleActionTimer(timeout, new TimerConfig(sessionId.toString, true))
-        addReadMailHandle(sessionId, timer.getHandle)
     }
 
     @Timeout

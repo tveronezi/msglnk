@@ -44,17 +44,12 @@ class BaseEAO {
         findUnique(cls, query)
     }
 
-    def findById[T, E](cls: Class[T], value: E): Option[T] = {
-        if(value == null) {
-            None
-        } else {
-            val obj = em.find(cls, value)
-            if (obj == null) {
-                None
-            } else {
-                Some(cls.cast(obj))
-            }
+    def findById[T, E](cls: Class[T], value: E): Option[T] = value match {
+        case e: E => em.find(cls, e) match {
+            case t: T => Option(t)
+            case null=> None
         }
+        case null => None
     }
 
     def delete[T](cls: Class[T], id: Long) {
