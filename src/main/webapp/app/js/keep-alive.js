@@ -50,8 +50,27 @@ YUI.add('ux-keep-alive', function (Y) {
         window.console.log('keep-alive callback created.', timeoutKey);
     }
 
+    function connectSocket() {
+        var location = window.location;
+        var wsPath = 'ws://' + location.hostname + ':' + location.port + window.ux.ROOT_URL + 'ws/connection';
+        var connection = new window.WebSocket(wsPath);
+        connection.onopen = function () {
+            window.console.log('WebSocket: connection started.');
+        };
+        connection.onerror = function () {
+            // reload application
+            window.location.reload();
+        };
+        connection.onmessage = function (e) {
+            var msg = e.data;
+            window.console.log('WebSocket: message -> ' + msg);
+            Y.ux.Growl.showNotification('success', msg);
+        };
+    }
+
     Y.on('io:start', function () {
         scheduleNext();
     });
     scheduleNext();
+    connectSocket();
 });

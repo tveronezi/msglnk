@@ -48,7 +48,7 @@ window.ux.YUI_CONF = {
                     path: '../../../app/js/sequence.js'
                 },
                 'ux-keep-alive': {
-                    requires: ['ux-console', 'io-base'],
+                    requires: ['ux-console', 'io-base', 'ux-growl'],
                     path: '../../../app/js/keep-alive.js'
                 },
                 'ux-templates': {

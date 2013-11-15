@@ -16,33 +16,27 @@
  * limitations under the License.
  */
 
-package msglnk.rest
+package msglnk.sockets
 
-import javax.ws.rs._
-import javax.ws.rs.core.Context
-import javax.servlet.http.HttpServletRequest
-import java.security.Principal
-import msglnk.dto.SessionDataDto
+import javax.inject.Inject
+import msglnk.service.Connections
+import javax.websocket._
+import javax.websocket.server.ServerEndpoint
 
-@Path("/keep-alive")
-class KeepAlive {
+@ServerEndpoint("/ws/connection")
+class Connection {
 
-    @GET
-    def ping(@Context request: HttpServletRequest): SessionDataDto = {
-        val session = request.getSession
-        val dto = new SessionDataDto()
-        dto.setSessionId(session.getId)
-        request.getUserPrincipal match {
-            case principal: Principal => {
-                dto.setUserName(principal.getName)
-                dto.setLogged(true)
-            }
-            case null => {
-                dto.setUserName("guest")
-                dto.setLogged(false)
-            }
-        }
-        dto
+    @Inject
+    var connections: Connections = _
+
+    @OnOpen
+    def open(session: Session, conf: EndpointConfig) {
+        connections.addSession(session)
+    }
+
+    @OnClose
+    def close(session: Session, reason: CloseReason) {
+        connections.removeSession(session)
     }
 
 }

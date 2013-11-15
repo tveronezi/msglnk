@@ -24,6 +24,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tomee.version>1.6.0-SNAPSHOT</tomee.version>
+    <tomcat.version>7.0.47</tomcat.version>
     <openejb.version>4.6.0-SNAPSHOT</openejb.version>
     <javaee.api>6.0-5</javaee.api>
     <scala.version>2.9.2</scala.version>
@@ -103,6 +104,12 @@
       <groupId>org.apache.openejb.staticweb</groupId>
       <artifactId>static-tomee-jquery</artifactId>
       <version>${tomee.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-websocket-api</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>

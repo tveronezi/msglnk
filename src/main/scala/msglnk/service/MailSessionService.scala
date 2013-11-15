@@ -51,6 +51,9 @@ class MailSessionService {
     var baseEAO: BaseEAO = _
 
     @Inject
+    var connections: Connections = _
+
+    @Inject
     var timersHolder: MailReaderTimers = _
 
     def listSessions = {
@@ -117,8 +120,9 @@ class MailSessionService {
             case Some(mailSession) => {
                 val from = mailSession.getUserName
 
-                LOG.info("Sending email. Session: {}; From: {}, To: {}, Subject: {}, Text: '{}'",
-                    mailSession.getName, from, to, subject, text)
+                val logText = "Sending email. Session: %s; From: %s, To: %s, Subject: %s, Text: '%s'"
+                    .format(mailSession.getName, from, to, subject, text)
+                connections.sendToAll(logText)
 
                 val message = new MimeMessage(getSession(mailSession))
                 message.setFrom(new InternetAddress(from))
@@ -127,7 +131,7 @@ class MailSessionService {
                 message.setText(text)
                 Transport.send(message)
 
-                LOG.info("... Done sending email.")
+                connections.sendToAll("... Done sending email.")
             }
             case None => throw new MailSessionIdNotFound(sessionId)
         }
@@ -144,7 +148,7 @@ class MailSessionService {
         var number = 0
         findSession(sessionId) match {
             case Some(mailSession) => {
-                LOG.info("Reading emails from session '{}'", mailSession.getName)
+                connections.sendToAll("Reading emails from session '%s'".format(mailSession.getName))
                 val session = getSession(mailSession)
                 val store = session.getStore
                 store.connect()
@@ -172,7 +176,7 @@ class MailSessionService {
                         fp.add("X-Mailer")
                         folder.fetch(messages, fp)
 
-                        LOG.info("{} new message(s) found.", messages.length)
+                        connections.sendToAll("%d new message(s) found.".format(messages.length))
 
                         for (message <- messages) {
                             try {
@@ -180,6 +184,7 @@ class MailSessionService {
                             }
                             catch {
                                 case e: Exception => {
+                                    connections.sendToAll("Unable to read the email. Check log file.")
                                     LOG.error("Unable to read the email", e)
                                 }
                             } finally {

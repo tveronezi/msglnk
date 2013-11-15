@@ -171,9 +171,6 @@ YUI.add('ux-app', function (Y) {
             on: {
                 failure: function () {
                     Y.ux.Growl.showNotification('error', Y.ux.Messages.get('read.session.error'));
-                },
-                success: function () {
-                    Y.ux.Growl.showNotification('success', Y.ux.Messages.get('read.session.success'));
                 }
             }
         });

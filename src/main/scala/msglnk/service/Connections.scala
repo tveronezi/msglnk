@@ -16,33 +16,31 @@
  * limitations under the License.
  */
 
-package msglnk.rest
+package msglnk.service
 
-import javax.ws.rs._
-import javax.ws.rs.core.Context
-import javax.servlet.http.HttpServletRequest
-import java.security.Principal
-import msglnk.dto.SessionDataDto
+import javax.websocket.Session
+import javax.ejb.{LockType, Lock}
 
-@Path("/keep-alive")
-class KeepAlive {
+@javax.ejb.Singleton
+class Connections {
 
-    @GET
-    def ping(@Context request: HttpServletRequest): SessionDataDto = {
-        val session = request.getSession
-        val dto = new SessionDataDto()
-        dto.setSessionId(session.getId)
-        request.getUserPrincipal match {
-            case principal: Principal => {
-                dto.setUserName(principal.getName)
-                dto.setLogged(true)
-            }
-            case null => {
-                dto.setUserName("guest")
-                dto.setLogged(false)
-            }
-        }
-        dto
+    var sessions: Set[Session] = Set()
+
+    @Lock(LockType.WRITE)
+    def addSession(session: Session) {
+        sessions = sessions + session
+    }
+
+    @Lock(LockType.WRITE)
+    def removeSession(session: Session) {
+        sessions = sessions - session
+    }
+
+    @Lock(LockType.READ)
+    def sendToAll(message: String) {
+        sessions.foreach((session) => {
+            session.getBasicRemote.sendText(message)
+        })
     }
 
 }

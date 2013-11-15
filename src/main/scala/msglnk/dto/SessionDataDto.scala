@@ -16,33 +16,26 @@
  * limitations under the License.
  */
 
-package msglnk.rest
+package msglnk.dto
 
-import javax.ws.rs._
-import javax.ws.rs.core.Context
-import javax.servlet.http.HttpServletRequest
-import java.security.Principal
-import msglnk.dto.SessionDataDto
+import javax.xml.bind.annotation.{XmlElement, XmlAccessorType, XmlAccessType, XmlRootElement}
+import scala.Predef.String
+import scala.reflect.BeanProperty
 
-@Path("/keep-alive")
-class KeepAlive {
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
+class SessionDataDto {
 
-    @GET
-    def ping(@Context request: HttpServletRequest): SessionDataDto = {
-        val session = request.getSession
-        val dto = new SessionDataDto()
-        dto.setSessionId(session.getId)
-        request.getUserPrincipal match {
-            case principal: Principal => {
-                dto.setUserName(principal.getName)
-                dto.setLogged(true)
-            }
-            case null => {
-                dto.setUserName("guest")
-                dto.setLogged(false)
-            }
-        }
-        dto
-    }
+    @XmlElement
+    @BeanProperty
+    var userName: String = _
+
+    @XmlElement
+    @BeanProperty
+    var sessionId: String = _
+
+    @XmlElement
+    @BeanProperty
+    var logged: Boolean = _
 
 }
