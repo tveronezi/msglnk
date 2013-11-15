@@ -1,7 +1,7 @@
 window.ux = window.ux || {};
 window.ux.YUI_CONF = {
     // Uncomment it to get the debug version of YUI
-    filter: 'debug',
+    // filter: 'debug',
 
     base: window.ux.ROOT_URL + 'webjars/yui/3.11.0/',
 
@@ -48,7 +48,7 @@ window.ux.YUI_CONF = {
                     path: '../../../app/js/sequence.js'
                 },
                 'ux-keep-alive': {
-                    requires: ['ux-console', 'io-base', 'ux-growl'],
+                    requires: ['ux-console', 'io-base', 'ux-growl', 'event-custom', 'json-parse'],
                     path: '../../../app/js/keep-alive.js'
                 },
                 'ux-templates': {

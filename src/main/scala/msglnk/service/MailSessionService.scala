@@ -119,19 +119,19 @@ class MailSessionService {
         findSession(sessionId) match {
             case Some(mailSession) => {
                 val from = mailSession.getUserName
-
-                val logText = "Sending email. Session: %s; From: %s, To: %s, Subject: %s, Text: '%s'"
-                    .format(mailSession.getName, from, to, subject, text)
-                connections.sendToAll(logText)
-
                 val message = new MimeMessage(getSession(mailSession))
                 message.setFrom(new InternetAddress(from))
                 message.setRecipients(Message.RecipientType.TO, to)
                 message.setSubject(subject)
                 message.setText(text)
                 Transport.send(message)
-
-                connections.sendToAll("... Done sending email.")
+                connections.sendToAll("email-sent", Map(
+                    "sessionName" -> mailSession.getName,
+                    "from" -> from,
+                    "to" -> to,
+                    "subject" -> subject,
+                    "text" -> text
+                ))
             }
             case None => throw new MailSessionIdNotFound(sessionId)
         }
@@ -148,7 +148,7 @@ class MailSessionService {
         var number = 0
         findSession(sessionId) match {
             case Some(mailSession) => {
-                connections.sendToAll("Reading emails from session '%s'".format(mailSession.getName))
+                connections.sendToAll("email-read-start", Map("sessionName" -> mailSession.getName))
                 val session = getSession(mailSession)
                 val store = session.getStore
                 store.connect()
@@ -176,7 +176,9 @@ class MailSessionService {
                         fp.add("X-Mailer")
                         folder.fetch(messages, fp)
 
-                        connections.sendToAll("%d new message(s) found.".format(messages.length))
+                        connections.sendToAll("email-read-count",
+                            Map("sessionName" -> mailSession.getName, "count" -> messages.length)
+                        )
 
                         for (message <- messages) {
                             try {
@@ -184,7 +186,7 @@ class MailSessionService {
                             }
                             catch {
                                 case e: Exception => {
-                                    connections.sendToAll("Unable to read the email. Check log file.")
+                                    connections.sendToAll("email-read-error", Map())
                                     LOG.error("Unable to read the email", e)
                                 }
                             } finally {

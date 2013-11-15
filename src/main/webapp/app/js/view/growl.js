@@ -56,9 +56,9 @@ YUI.add('ux-growl', function (Y) {
 
     function showNotification(messageType, messageText) {
         var alert = Y.Node.create(Y.ux.Templates.build('growl', {
-            messageType: messageType,
-            messageText: messageText
+            messageType: messageType
         }));
+        alert.appendChild(Y.Node.create('<div class="message">' + messageText + '</div>'));
         growlContainer.get('container').appendChild(alert);
         new Y.Anim({
             node: alert,

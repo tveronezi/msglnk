@@ -60,8 +60,6 @@ YUI.add('ux-app', function (Y) {
                 model.save({}, function (err) {
                     if (err) {
                         Y.ux.Growl.showNotification('danger', Y.ux.Messages.get('email.send.error', {}));
-                    } else {
-                        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('email.send.success', {}));
                     }
                 });
             });
@@ -177,11 +175,22 @@ YUI.add('ux-app', function (Y) {
         app.navigate('/');
     });
 
-
     sessionsListView.on('ux-trigger-session-add', function () {
         app.navigate('/session/add');
     });
 
+    Y.on('email-read-start', function (data) {
+        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('read.session.start', data));
+    });
+
+    Y.on('email-read-count', function (data) {
+        Y.ux.Growl.showNotification('success', Y.ux.Messages.get('read.session.end', data));
+    });
+
+    Y.on('email-sent', function (data) {
+        var successMessage = Y.ux.Templates.build('email-success', data, true);
+        Y.ux.Growl.showNotification('success', successMessage);
+    });
 
     app.render().dispatch();
 });

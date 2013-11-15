@@ -62,9 +62,13 @@ YUI.add('ux-keep-alive', function (Y) {
             window.location.reload();
         };
         connection.onmessage = function (e) {
-            var msg = e.data;
-            window.console.log('WebSocket: message -> ' + msg);
-            Y.ux.Growl.showNotification('success', msg);
+            try {
+                var evtData = Y.JSON.parse(e.data);
+                Y.fire(evtData.type, evtData.data);
+            } catch (ex) {
+                window.console.error('WebSocket: parse -> ' + ex);
+            }
+            window.console.log('WebSocket: message -> ' + e.data);
         };
     }
 

@@ -28,7 +28,8 @@ YUI.add('ux-templates', function (Y) {
         'session-edit',
         'email-send',
         'growl',
-        'growl-container'
+        'growl-container',
+        'email-success'
     ];
 
     // A map will all the handlebars templates.
@@ -47,10 +48,13 @@ YUI.add('ux-templates', function (Y) {
 
     output.build = function (key, cfg) {
         var tpl = getTpl(key);
+        var result;
         if (cfg) {
-            return tpl(cfg);
+            result = tpl(cfg);
+        } else {
+            result = tpl({});
         }
-        return tpl({});
+        return result;
     };
 
     // Load all the files synchronous.

@@ -20,10 +20,13 @@ package msglnk.service
 
 import javax.websocket.Session
 import javax.ejb.{LockType, Lock}
+import com.google.gson.Gson
+import scala.collection.JavaConverters._
 
 @javax.ejb.Singleton
 class Connections {
 
+    val gson = new Gson()
     var sessions: Set[Session] = Set()
 
     @Lock(LockType.WRITE)
@@ -37,9 +40,13 @@ class Connections {
     }
 
     @Lock(LockType.READ)
-    def sendToAll(message: String) {
+    def sendToAll(messageType: String, message: Map[String, Any]) {
+        def messageJson = gson.toJson(Map(
+            "type" -> messageType,
+            "data" -> message.asJava
+        ).asJava)
         sessions.foreach((session) => {
-            session.getBasicRemote.sendText(message)
+            session.getBasicRemote.sendText(messageJson)
         })
     }
 

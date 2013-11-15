@@ -35,12 +35,14 @@ YUI.add('ux-i18n', function (Y) {
         'delete.session.success': 'Session "{{name}}" saved successfully.',
         'save.session.error': 'Impossible to save the session "{{name}}". Checkout your log messages.',
         'delete.session.error': 'Impossible to delete the session "{{name}}". Checkout your log messages.',
+        'read.session.start': 'Reading emails from "{{sessionName}}"...',
+        'read.session.end': '... "{{sessionName}}" has "{{count}}" new email(s).',
         'read.session.error': 'Impossible to read emails from this session. Checkout your log messages.',
         'email.send.error': 'Impossible to send your message". Checkout your log messages.',
         'email.send.success': 'Email sent successfully.',
-
         'name.of.email.session': 'A friendly name for your email session',
         'authenticator.data': 'Information used by the javax.mail.Authenticator object',
+        'from': 'From',
         'to': 'To',
         'who.is.going.to.get.this.email': 'Who is going to get this email?',
         'subject': 'Subject',
@@ -51,16 +53,23 @@ YUI.add('ux-i18n', function (Y) {
         'dummy': 'dummy'
     };
 
-    Y.namespace('ux.Messages').get = function (key, config) {
+    Y.namespace('ux.Messages').get = function (key, config, isHtml) {
         var tpl = messages[key];
         if (!tpl) {
             window.console.error('i18n key not found', key);
             return '!!' + key + '!!';
         }
+        var result;
         if (config) {
-            return tpl(config);
+            result = tpl(config);
+        } else {
+            result = tpl({});
         }
-        return tpl({});
+        if (isHtml) {
+            // Do not escape html.
+            return new Y.Handlebars.SafeString(result);
+        }
+        return result;
     };
 
     Y.Object.each(messages, function (value, key) {
