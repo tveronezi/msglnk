@@ -53,7 +53,7 @@ YUI.add('ux-keep-alive', function (Y) {
     function connectSocket() {
         var location = window.location;
         var protocol = 'ws';
-        if (location.protocol === 'https') {
+        if (location.protocol === 'https:' || location.protocol === 'https') {
             protocol = 'wss';
         }
         var wsPath = protocol + '://' + location.hostname + ':' + location.port + window.ux.ROOT_URL + 'ws/connection';
