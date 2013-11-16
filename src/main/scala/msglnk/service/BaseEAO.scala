@@ -28,7 +28,7 @@ import collection.JavaConversions._
 @RolesAllowed(Array("solution-admin"))
 class BaseEAO {
 
-    @PersistenceContext(unitName = "mailPU")
+    @PersistenceContext(unitName = "msglnkPU")
     var em: EntityManager = _
 
     def findAll[T](cls: Class[T]): Set[T] = {
