@@ -57,7 +57,11 @@ class Session {
     def getSessions = {
         var sessions = new ListBuffer[EmailSessionDto]
         mailService.listSessions.foreach {
-            session => sessions += buildSessionDto(session)
+            session => {
+                val dto = buildSessionDto(session)
+                dto.setUserPassword(null)
+                sessions += dto
+            }
         }
         sessions.asJava
     }
