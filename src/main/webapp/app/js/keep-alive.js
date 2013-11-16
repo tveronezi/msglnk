@@ -54,7 +54,7 @@ YUI.add('ux-keep-alive', function (Y) {
         var location = window.location;
         var protocol = 'ws';
         if (location.protocol === 'https') {
-            protocol = 'wss'
+            protocol = 'wss';
         }
         var wsPath = protocol + '://' + location.hostname + ':' + location.port + window.ux.ROOT_URL + 'ws/connection';
         var connection = new window.WebSocket(wsPath);
