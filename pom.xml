@@ -23,9 +23,9 @@
   <name>msglnk</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tomee.version>1.6.0-SNAPSHOT</tomee.version>
+    <tomee.version>1.6.0</tomee.version>
     <tomcat.version>7.0.47</tomcat.version>
-    <openejb.version>4.6.0-SNAPSHOT</openejb.version>
+    <openejb.version>4.6.0</openejb.version>
     <javaee.api>6.0-5</javaee.api>
     <scala.version>2.9.2</scala.version>
     <scala.plugin.version>2.15.2</scala.plugin.version>
@@ -49,6 +49,10 @@
   </profiles>
   <repositories>
     <repository>
+      <id>apache.releases</id>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
+    </repository>
+    <repository>
       <id>apache.snapshots</id>
       <url>http://repository.apache.org/snapshots/</url>
       <releases>
@@ -60,6 +64,10 @@
     </repository>
   </repositories>
   <pluginRepositories>
+    <pluginRepository>
+      <id>apache-m2-release-plugin</id>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
+    </pluginRepository>
     <pluginRepository>
       <id>apache-m2-snapshot-plugin</id>
       <name>Apache Snapshot Repository</name>
