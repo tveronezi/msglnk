@@ -90,18 +90,18 @@ window.ux.YUI_CONF = {
             modules: {
                 // External lib
                 'ux-lib-less': {
-                    path: '../../../app/lib/less/less.min.js'
+                    path: '../../../webjars/less/1.7.5/less.min.js'
                 },
                 'ux-lib-jquery': {
-                    path: '../../../app/lib/jquery/jquery.min.js'
+                    path: '../../../webjars/jquery/2.1.1/jquery.min.js'
                 },
                 'ux-lib-bootstrap': {
                     requires: ['ux-lib-jquery', 'ux-lib-bootstrap-css'],
-                    path: '../../../app/lib/bootstrap/js/bootstrap.min.js'
+                    path: '../../../webjars/bootstrap/3.2.0/js/bootstrap.min.js'
                 },
                 'ux-lib-bootstrap-css': {
                     type: 'css',
-                    path: '../../../app/lib/bootstrap/css/bootstrap.css'
+                    path: '../../../webjars/bootstrap/3.2.0/css/bootstrap.min.css'
                 }
             }
         }

@@ -23,8 +23,6 @@ limitations under the License.
     <title>MsgLnk</title>
     <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css">
     <script type="text/javascript" src="<c:url value='/webjars/yui/3.11.0/yui/yui-min.js'/>"></script>
-
-    <%--<script src="http://localhost:8079/yui_3.13.0/build/yui/yui-min.js"></script>--%>
     <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.
